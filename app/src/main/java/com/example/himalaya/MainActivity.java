@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.himalaya.base.BaseApplication;
+import com.example.himalaya.utils.LogUtil;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.httputil.Config;
@@ -35,13 +36,15 @@ public class MainActivity extends AppCompatActivity {
                     int size = categories.size();
                     Log.d(TAG, "categories size ---- <<" + size);
                     for (Category category : categories) {
-                        Log.d(TAG, "category ------>" + category.getCategoryName());
+//                        Log.d(TAG, "category ------>" + category.getCategoryName());
+                        LogUtil.d(TAG,"categroy- ----->" + category.getCategoryName());
                     }
                 }
             }
             @Override
             public void onError(int code, String message) {
-                Log.d(TAG , "error code --" + code + "error message" + message);
+//                Log.d(TAG , "error code --" + code + "error message" + message);
+                LogUtil.d(TAG,"error code --->" + code + "error message ----->" + message);
             }
         });
 
