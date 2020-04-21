@@ -70,9 +70,22 @@ CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
     }});
 ```
 
+`因为android版本27以上、拒绝http明文请求。所以会callback 回调连接失败
+
+解决方案：在res目录下新建xml/network_security_config.xml
+
 `
 
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>    
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
+```
 
+`
+
+并在Manifests声明 android:roundIcon="@mipmap/ic_launcher_round"
 
 
 
