@@ -9,14 +9,8 @@ yu test
 
 
 
-<<<<<<< HEAD
-进度P7 
+已完成进度P9
 =======
-已完成进度P4 LogUtil
->>>>>>> refs/remotes/origin/master
-
-
-
 配置build.gradle 中阿里镜像
 
 ```java
@@ -136,6 +130,8 @@ public  static BaseFragment getFragment(int index){
     sCache.put(index, baseFragment);    
     return baseFragment;}
 ```
+
+配置Indicator的监听事件，实现点击切换、在IndicatorAdapter中暴露一个接口OnIndicatorTapClickListener。
 
 
 
