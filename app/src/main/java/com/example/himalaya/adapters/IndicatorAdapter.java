@@ -16,6 +16,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
 public class IndicatorAdapter extends CommonNavigatorAdapter {
 
     private final String[] mTitles;
+    private OnIndicatorTapClickListener mOnTapClickListener;
 
     public IndicatorAdapter(Context context) {
         mTitles = context.getResources().getStringArray(R.array.indicator_title);
@@ -48,6 +49,9 @@ public class IndicatorAdapter extends CommonNavigatorAdapter {
             @Override
             public void onClick(View view) {
                 //切换viewPager的内容,如果index不一样的话.
+                if (mOnTapClickListener != null) {
+                    mOnTapClickListener.onTabClick(index);
+                }
             }
         });
         //把这个创建好的view返回回去
@@ -60,5 +64,13 @@ public class IndicatorAdapter extends CommonNavigatorAdapter {
         indicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);
         indicator.setColors(Color.parseColor("#ffffff"));
         return indicator;
+    }
+
+    public void setOnIndicatorTapClickListener(OnIndicatorTapClickListener listener){
+        this.mOnTapClickListener = listener;
+    }
+
+    public interface OnIndicatorTapClickListener {
+        void onTabClick(int index);
     }
 }

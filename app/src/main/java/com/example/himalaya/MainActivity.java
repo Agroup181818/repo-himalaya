@@ -3,7 +3,7 @@ package com.example.himalaya;
 import android.os.Bundle;
 import android.util.Log;
 
-<<<<<<< HEAD
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
@@ -12,10 +12,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.himalaya.adapters.IndicatorAdapter;
 import com.example.himalaya.adapters.MainContentAdapter;
-=======
+
 import com.example.himalaya.base.BaseApplication;
 import com.example.himalaya.utils.LogUtil;
->>>>>>> refs/remotes/origin/master
+
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.category.Category;
@@ -34,12 +34,26 @@ public class MainActivity extends FragmentActivity {
     public static final String TAG = "MainActivity";
     private MagicIndicator mMagicIndicator;
     private ViewPager mContentPager;
+    private IndicatorAdapter mIndicatorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        initEvent();
+    }
+
+    private void initEvent() {
+        mIndicatorAdapter.setOnIndicatorTapClickListener(new IndicatorAdapter.OnIndicatorTapClickListener() {
+            @Override
+            public void onTabClick(int index) {
+                LogUtil.d(TAG,"click index is ----> " + index);
+                if (mContentPager != null){
+                    mContentPager.setCurrentItem(index);
+                }
+            }
+        });
     }
 
     private void initView() {
@@ -48,14 +62,15 @@ public class MainActivity extends FragmentActivity {
 
 
         //创建indicator的适配器
-        IndicatorAdapter adapter = new IndicatorAdapter(this);
+        mIndicatorAdapter = new IndicatorAdapter(this);
         CommonNavigator commonNavigator = new CommonNavigator(this);
-        commonNavigator.setAdapter(adapter);
+        //自动调节Indicator宽度和高度
+        commonNavigator.setAdjustMode(true);
+        commonNavigator.setAdapter(mIndicatorAdapter);
 
 
         //viewPager
         mContentPager = this.findViewById(R.id.content_pager);
-
 
         //创建内容适配器
         FragmentManager supportFragmentManager = getSupportFragmentManager();
@@ -68,8 +83,7 @@ public class MainActivity extends FragmentActivity {
         mMagicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mContentPager);
 
-<<<<<<< HEAD
-=======
+
         Map<String, String> map = new HashMap<>();
         CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
             @Override
@@ -90,7 +104,6 @@ public class MainActivity extends FragmentActivity {
                 LogUtil.d(TAG,"error code --->" + code + "error message ----->" + message);
             }
         });
->>>>>>> refs/remotes/origin/master
 
     }
 
