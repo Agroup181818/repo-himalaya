@@ -10,7 +10,7 @@ yu test
 
 
 
-进度P3 
+进度P7 
 
 配置build.gradle 中阿里镜像
 
@@ -71,6 +71,9 @@ CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
 ```
 
 `
+遇到的问题;安卓SDK升级后，V4包会找不到报错,更新后android.support.v4.view.ViewPager被androidx.viewpager.widget.ViewPager所取代，所有关于v4的包都要替换掉。
+
+具体如何修改：修改XML文件中的android.support.v4.view.ViewPager为androidx.viewpager.widget.ViewPager。删除引入的所有关于v4的包，设置Android Studio自动导包，自动补全包即可。
 
 
 
