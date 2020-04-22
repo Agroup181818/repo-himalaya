@@ -3,6 +3,7 @@ package com.example.himalaya;
 import android.os.Bundle;
 import android.util.Log;
 
+<<<<<<< HEAD
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
@@ -11,6 +12,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.himalaya.adapters.IndicatorAdapter;
 import com.example.himalaya.adapters.MainContentAdapter;
+=======
+import com.example.himalaya.base.BaseApplication;
+import com.example.himalaya.utils.LogUtil;
+>>>>>>> refs/remotes/origin/master
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.category.Category;
@@ -63,6 +68,29 @@ public class MainActivity extends FragmentActivity {
         mMagicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mContentPager);
 
+<<<<<<< HEAD
+=======
+        Map<String, String> map = new HashMap<>();
+        CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
+            @Override
+            public void onSuccess(@Nullable CategoryList categoryList) {
+                List<Category> categories = categoryList.getCategories();
+                if (categories != null) {
+                    int size = categories.size();
+                    Log.d(TAG, "categories size ---- <<" + size);
+                    for (Category category : categories) {
+//                        Log.d(TAG, "category ------>" + category.getCategoryName());
+                        LogUtil.d(TAG,"categroy- ----->" + category.getCategoryName());
+                    }
+                }
+            }
+            @Override
+            public void onError(int code, String message) {
+//                Log.d(TAG , "error code --" + code + "error message" + message);
+                LogUtil.d(TAG,"error code --->" + code + "error message ----->" + message);
+            }
+        });
+>>>>>>> refs/remotes/origin/master
 
     }
 
