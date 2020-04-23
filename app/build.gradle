@@ -51,4 +51,5 @@ dependencies {
     implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
     implementation 'com.android.support:recyclerview-v7:29.0.0-rc01'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 }

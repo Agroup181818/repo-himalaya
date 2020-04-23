@@ -9,7 +9,7 @@ yu test
 
 
 
-已完成进度P13
+已完成进度P15
 =======
 配置build.gradle 中阿里镜像
 
@@ -194,4 +194,39 @@ public final class UIUtil {
 }
 ```
 
+获取从喜马拉雅SDK获取数据、返回状态有四种情况：成功、网络错误、内容为空、正在加载
 
+使用UILoader类实现四种情况的切换。
+
+```
+private void switchUIByCurrentStatus() {    
+//加载中    
+if (mLoadingView == null) {        
+mLoadingView = getLoadingView();        
+addView(mLoadingView);    
+}    
+// 根据状态设置可见    
+mLoadingView.setVisibility(mCurrentStatus == UIStatus.LOADING ? VISIBLE : GONE);    
+//成功    
+if (mSuccessView == null) {        
+mSuccessView = getSuccessView(this);        
+addView(mSuccessView);    
+}    
+// 根据状态设置可见    
+mSuccessView.setVisibility(mCurrentStatus == UIStatus.SUCCESS ? VISIBLE : GONE);    
+//网络错误页面    
+if (mNetworkErrorView == null) {        
+mNetworkErrorView = getNetWorkErrorView();        addView(mNetworkErrorView);    
+}    
+// 根据状态设置可见    
+mNetworkErrorView.setVisibility(mCurrentStatus == UIStatus.NETWORK_ERROE ? VISIBLE : GONE);    
+//数据为空界面    
+if (mEmptyView == null) {        
+mEmptyView = getEmptyView();        
+addView(mEmptyView);    
+}    
+// 根据状态设置可见    
+mEmptyView.setVisibility(mCurrentStatus == UIStatus.EMPTY ? VISIBLE : GONE);}
+```
+
+如果出现网络错误、加载初始化页面时、为UI设置监听器、实现点击重新获取数据。
