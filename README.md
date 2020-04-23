@@ -61,7 +61,6 @@ CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
     }});
 ```
 
-<<<<<<< HEAD
 
 ###### 问题：安卓SDK升级后，V4包会找不到报错,更新后android.support.v4.view.ViewPager被androidx.viewpager.widget.ViewPager所取代，所有关于v4的包都要替换掉。
 
@@ -77,7 +76,10 @@ CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
     <base-config cleartextTrafficPermitted="true" />
 </network-security-config>
 ```
->>>>>>> refs/remotes/origin/master
+###### 问题: AndroidX变化												
+
+解决方案：android.support.v7.widget.RecyclerView  
+---->androidx.recyclerview.widget.RecyclerView
 
 并在Manifests声明 android:roundIcon="@mipmap/ic_launcher_round"
 
@@ -145,20 +147,51 @@ implementation 'com.android.support:recyclerview-v7:29.0.0-rc01'
 
 //P11 推荐UI 显示
 
-这句会报错
-
-```
-linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-```
-
-换成下面这句
-
-```
-linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-```
-
 导包picasso
 
 ```
 implementation 'com.squareup.picasso:picasso:2.5.2'
 ```
+
+
+配置圆角矩阵的样式
+```
+public class RoundRectImageView extends AppCompatImageView {
+
+    private float roundRatio = 0.1f;
+    private Path path;
+
+    public RoundRectImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (path == null) {
+            path = new Path();
+            path.addRoundRect(new RectF(0, 0, getWidth(), getHeight()), roundRatio * getWidth(), roundRatio * getHeight(), Path.Direction.CW);
+        }
+        canvas.save();
+        canvas.clipPath(path);
+        super.onDraw(canvas);
+        canvas.restore();
+    }
+}
+```
+
+用到了一个工具类UIUtil
+```
+public final class UIUtil {
+
+    public static int dip2px(Context context, double dpValue) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * density + 0.5);
+    }
+
+    public static int getScreenWidth(Context context) {
+        return context.getResources().getDisplayMetrics().widthPixels;
+    }
+}
+```
+
+

@@ -91,7 +91,7 @@ public class MainActivity extends FragmentActivity {
                 List<Category> categories = categoryList.getCategories();
                 if (categories != null) {
                     int size = categories.size();
-                    Log.d(TAG, "categories size ---- <<" + size);
+                    Log.d(TAG, "categories size ---- >" + size);
                     for (Category category : categories) {
 //                        Log.d(TAG, "category ------>" + category.getCategoryName());
                         LogUtil.d(TAG,"categroy- ----->" + category.getCategoryName());
