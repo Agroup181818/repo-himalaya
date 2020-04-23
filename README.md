@@ -135,3 +135,30 @@ public  static BaseFragment getFragment(int index){
 
 
 
+//P10 获取内容数据
+
+导包 RecyclerView
+
+```
+implementation 'com.android.support:recyclerview-v7:29.0.0-rc01'
+```
+
+//P11 推荐UI 显示
+
+这句会报错
+
+```
+linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+```
+
+换成下面这句
+
+```
+linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+```
+
+导包picasso
+
+```
+implementation 'com.squareup.picasso:picasso:2.5.2'
+```
