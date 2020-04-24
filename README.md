@@ -9,7 +9,7 @@ yu test
 
 
 
-已完成进度P15
+已完成进度P20
 =======
 配置build.gradle 中阿里镜像
 
@@ -230,3 +230,145 @@ mEmptyView.setVisibility(mCurrentStatus == UIStatus.EMPTY ? VISIBLE : GONE);}
 ```
 
 如果出现网络错误、加载初始化页面时、为UI设置监听器、实现点击重新获取数据。
+
+
+
+//p16 UILoading加载中界面
+
+编写LoadingView类，在LoadingView类中实现图标的旋转
+
+```
+@Override
+protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    mNeedRotate = true;
+    //绑定到windows的时候
+    post(new Runnable() {
+        @Override
+        public void run() {
+            rotateDegree += 30;
+            rotateDegree = rotateDegree <= 360 ? rotateDegree:0;
+            invalidate();
+            //是否继续旋转
+            if(mNeedRotate){
+                postDelayed(this,100);
+            }
+
+        }
+    });
+}
+```
+
+P17 UILoader空页面
+
+当页面为空时显示页面
+
+```
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_centerInParent="true"
+    android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="75dp"
+            android:src="@mipmap/content_empty"
+            android:layout_height="75dp" />
+
+        <TextView
+            android:layout_marginTop="9dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="呜呜~ 没有内容.."/>
+
+</LinearLayout>
+```
+
+P18 页面跳转
+
+在RecommendListAdapter中添加监听
+
+```
+holder.itemView.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        if(mItemClickListerer !=null){
+            mItemClickListerer.onItemClick((Integer) view.getTag());
+        }
+        Log.d(TAG,"holder.itemView clicke -- > "+view.getTag());
+    }
+});
+```
+
+当点击时，跳转界面
+
+```
+@Override
+public void onItemClick(int position) {
+    //Item被点击了,跳转到详情界面
+    Intent intent = new Intent(getContext(), DetailActivity.class);
+    startActivity(intent);
+
+}
+```
+
+P19 详情界面
+
+在DetailActivity中显示专辑的标题、作者、封面信息
+
+```
+@Override
+public void onAlbumLoaded(Album album) {
+    if(mAlbumTitle!=null){
+        mAlbumTitle.setText(album.getAlbumTitle());
+    }
+    if(malubmAuthor != null){
+        malubmAuthor.setText(album.getAnnouncer().getNickname());
+    }
+    if (mlargeCover != null) {
+        Picasso.with(this).load(album.getCoverUrlLarge()).into(mlargeCover);
+    }
+    if (msmallCover != null) {
+        Picasso.with(this).load(album.getCoverUrlLarge()).into(msmallCover);
+    }
+}
+```
+
+详情页面
+
+```
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="-30dp"
+    android:layout_toRightOf="@+id/viv_samll_cover"
+    android:layout_below="@+id/iv_large_cover"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="这是标题"
+        android:textSize="18sp"
+        android:id="@+id/tv_album_title"
+        android:textColor="#ffffff"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="这是作者"
+        android:textSize="12sp"
+        android:id="@+id/tv_album_author"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffffff"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+```
+
+P20 跟换logo
+
+在manifests里修改logo
+
+```
+android:roundIcon="@mipmap/logo"
+```
+
