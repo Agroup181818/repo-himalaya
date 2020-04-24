@@ -7,9 +7,14 @@ this is a test
 
 yu test
 
+# git强制覆盖本地代码和强制推送本地到远程仓库
 
+1.git强制覆盖本地文件（与git远程仓库保持一致）：
+git fetch --all
+git reset --hard origin/master
+git pull
 
-已完成进度P20
+已完成进度P26
 =======
 配置build.gradle 中阿里镜像
 
@@ -371,4 +376,51 @@ P20 跟换logo
 ```
 android:roundIcon="@mipmap/logo"
 ```
+
+
+P21引入高斯模糊工具类
+```
+public class ImageBlur {
+    public static void makeBlur(ImageView imageview, Context context) {
+        BitmapDrawable drawable = (BitmapDrawable) imageview.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        Bitmap blurred = blurRenderScript(bitmap, 10, context); //second parametre is radius max:25
+        imageview.setImageBitmap(blurred); //radius decide blur amount
+    }
+
+
+    private static Bitmap blurRenderScript(Bitmap smallBitmap, int radius, Context context) {
+        smallBitmap = RGB565toARGB888(smallBitmap);
+        Bitmap bitmap = Bitmap.createBitmap(smallBitmap.getWidth(), smallBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        RenderScript renderScript = RenderScript.create(context);
+        Allocation blurInput = Allocation.createFromBitmap(renderScript, smallBitmap);
+        Allocation blurOutput = Allocation.createFromBitmap(renderScript, bitmap);
+        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+        blur.setInput(blurInput);
+        blur.setRadius(radius); // radius must be 0 < r <= 25
+        blur.forEach(blurOutput);
+        blurOutput.copyTo(bitmap);
+        renderScript.destroy();
+        return bitmap;
+
+    }
+
+    private static Bitmap RGB565toARGB888(Bitmap img) {
+        int numPixels = img.getWidth() * img.getHeight();
+        int[] pixels = new int[numPixels];
+
+        //Get JPEG pixels.  Each int is the color values for one pixel.
+        img.getPixels(pixels, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());
+
+        //Create a Bitmap of the appropriate format.
+        Bitmap result = Bitmap.createBitmap(img.getWidth(), img.getHeight(), Bitmap.Config.ARGB_8888);
+
+        //Set RGB pixels.
+        result.setPixels(pixels, 0, result.getWidth(), 0, 0, result.getWidth(), result.getHeight());
+        return result;
+    }
+}
+```
+
+
 
