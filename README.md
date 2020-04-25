@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P28
+已完成进度P37
 =======
 配置build.gradle 中阿里镜像
 
@@ -453,4 +453,350 @@ p28>为实现详情页DetailActivity 数据加载四种状态：正在加载、�
 将RecycleView 放到 Framlayout 帧布局中 作为container，并且将Framlayout.inlfater(mUiLoader) 通过判断数据的状态、改变UiLoader的状态。
 
 最后将 mUiLoader 加载到DetailActivity中。
+
+P29 设置item的点击事件
+
+```
+//设置item的点击事件
+itemView.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Toast.makeText(view.getContext(),"you click "+position+" item",Toast.LENGTH_SHORT).show();
+    }
+});
+```
+
+P30 从详情列表界面跳转到播放器界面
+
+在点击监听里设置监听事件
+
+```
+//设置item的点击事件
+itemView.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        //Toast.makeText(view.getContext(),"you click "+position+" item",Toast.LENGTH_SHORT).show();
+        if (mItemClickListener != null) {
+            mItemClickListener.onItemClick();
+        }
+    }
+});
+```
+
+在DetailActivity里设置跳转到PlayActivity
+
+```
+@Override
+public void onItemClick() {
+    //TODO;跳转到播放器界面
+    Intent intent = new Intent(this,PlayerActivity.class);
+    startActivity(intent);
+}
+```
+
+在PlayActivity里指向activity_player.xml布局文件
+
+```
+@Override
+protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_player);
+}
+```
+
+P31编写播放器布局界面
+
+```
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:maxLines="2"
+        android:id="@+id/track_title"
+        android:ellipsize="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="这是标题内容"
+        />
+    <androidx.viewpager.widget.ViewPager
+        android:background="#ff00ff"
+        android:layout_below="@+id/track_title"
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="100dp"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <!--进度条和时间-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/current_position"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="00:00"
+                android:textSize="16sp" />
+
+            <SeekBar
+                android:id="@+id/track_seek_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp" />
+
+            <TextView
+                android:id="@+id/track_duration"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="00:00"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+        <!--播放控制-->
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:src="@mipmap/sort_descending"
+                android:layout_height="20dp" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:src="@mipmap/previous"
+                android:layout_height="20dp" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:src="@mipmap/play"
+                android:layout_height="35dp" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:src="@mipmap/next_press"
+                android:layout_height="20dp" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:src="@mipmap/player_icon_list_press"
+                android:layout_height="20dp" />
+        </LinearLayout>
+        </LinearLayout>
+</RelativeLayout>
+```
+
+P32 介绍播放器和阅读文档
+
+P33 逻辑层接口定义
+
+抽取接口presenter的共同代码至IBasePresenter，减少代码冗余
+
+```
+public interface IBasePresenter<T> {
+
+    /**
+     * 注册UI的回调接口
+     * @param t
+     */
+    void registerViewCallback(T t);
+
+    /**
+     * 取消注册
+     * @param t
+     */
+    void unregisterViewCallback(T t);
+
+}
+```
+
+定义逻辑层接口
+
+```
+public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
+
+    /**
+     * 播放
+     */
+    void play();
+
+    /**
+     * 暂停
+     */
+    void pause();
+
+    /**
+     * 停止播放
+     */
+    void stop();
+
+    /**
+     * 上一首
+     */
+    void playPre();
+
+    /**
+     * 播放下一首
+     */
+    void playNest();
+
+    /**
+     * 切换播放类型
+     * @param mode
+     */
+    void switchPlayMode(XmPlayListControl.PlayMode mode);
+
+    /**
+     * 获取播放列表
+     */
+    void getPlayList();
+
+    /**
+     * 根据节目在列表中的位置播放
+     * @param index
+     */
+    void playByIndex(int index);
+
+    /**
+     * 切换播放进度
+     * @param progress
+     */
+    void seekTo(int progress);
+}
+```
+
+P34 播放器的UI回调接口
+
+```
+/**
+ * 开始播放
+ */
+void onPlayStart();
+
+/**
+ * 播放暂停
+ */
+void onPlayPause();
+
+/**
+ * 播放停止
+ */
+void onPlayStop();
+
+/**
+ * 播放错误
+ */
+void onPlayError();
+
+/**
+ * 下一首播放
+ */
+void nextPlay(Track track);
+
+/**
+ * 上一首播放
+ */
+void prePlay();
+
+/**
+ * 播放列表数据加载成功
+ * @param list
+ */
+void onListLoaded(List<Track> list);
+
+/**
+ * 播放器模式改变
+ * @param playMode
+ */
+void onPlayModeChange(XmPlayListControl.PlayMode playMode);
+
+/**
+ * 季度条的改变
+ * @param currentProgress
+ * @param total
+ */
+void onProgressChange(long currentProgress,long total);
+
+/**
+ * 广告正在加载
+ */
+void onAdLoading();
+
+/**
+ * 广告结束
+ */
+void onAdFinished();
+```
+
+P35 逻辑层播放列表数据设置和测试播放
+
+添加播放器权限
+
+```
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+```
+
+配置service进程
+
+```
+<service
+    android:name="com.ximalaya.ting.android.opensdk.player.service.XmPlayerService"
+android:process=":player"/>
+```
+
+播放
+
+```
+@Override
+public void play() {
+    if (isPlayListSet) {
+        mPlayerManager.play();
+    }
+}
+```
+
+bug:
+
+在抽取Presenter时，由于各个Presenter里的方面命名有点不一样，例如unRegisterViewCallback和unregisterViewCallback成错误。
+
+解决方法：将各个presenter的命名统一为BasePresenter里的命名即可。
+
+P36 添加广告物料的监听
+
+```
+mPlayerManager.addAdsStatusListener(this);
+```
+
+P37播放器状态相关的接口方法
+
+```
+//注册播放器状态相关的接口
+mPlayerManager.addPlayerStatusListener(this);
+```
 

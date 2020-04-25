@@ -1,5 +1,6 @@
 package com.example.himalaya;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -19,6 +20,7 @@ import com.example.himalaya.adapters.DetailListAdapter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.example.himalaya.presenters.AlbumDetailPresenter;
+import com.example.himalaya.presenters.PlayerPresenter;
 import com.example.himalaya.utils.ImageBlur;
 import com.example.himalaya.utils.LogUtil;
 import com.example.himalaya.views.RoundRectImageView;
@@ -32,7 +34,7 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetrayClickListener {
+public class DetailActivity extends BaseActivity implements IAlbumDetailViewCallback, UILoader.OnRetrayClickListener, DetailListAdapter.ItemClickListener {
 
     private static final String TAG = "DetailActivity";
     private ImageView mlargeCover;
@@ -103,6 +105,8 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
                 outRect. right=UIUtil. dip2px(view. getContext(), 2);
             }
         });
+
+        mDetailListAdapter.setItemClickListener(this);
         return detailListView;
     }
 
@@ -184,5 +188,15 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         if (mAblumDetailPresenter != null) {
             mAblumDetailPresenter.getAlbumDetail((int) mCurrentId,mCurrentPage);
         }
+    }
+
+    @Override
+    public void onItemClick(List<Track> mdetailData, int position) {
+        //设置播放器的数据
+        PlayerPresenter playerPresenter = PlayerPresenter.getPlayerPresenter();
+        playerPresenter.setPlayList(mdetailData,position);
+        //跳转到播放器界面
+        Intent intent = new Intent(this,PlayerActivity.class);
+        startActivity(intent);
     }
 }
