@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P26
+已完成进度P28
 =======
 配置build.gradle 中阿里镜像
 
@@ -422,5 +422,35 @@ public class ImageBlur {
 }
 ```
 
+p27 ==> 在DetailListAdapter 中实现 为每个详情页面itemUI设置数据
 
+```java
+@Overridepublic void onBindViewHolder(@NonNull InnerHolder holder, int position) {    
+    //找到控件、设置数据    
+    View itemView = holder.itemView;    
+    //顺序ID    
+    TextView orderTv = itemView.findViewById(R.id.order_text);    
+    //标题    
+    TextView titleTv = itemView.findViewById(R.id.detail_item_title);    //播放次数    
+    TextView playCountTv = itemView.findViewById(R.id.detail_item_play_count);    
+    //时长    
+    TextView durationTv = itemView.findViewById(R.id.detail_item_duration);    
+    //更新日期    
+    TextView updateDateTv = itemView.findViewById(R.id.detail_item_update_time);    
+    //设置数据    
+    Track track = mdetailData.get(position);    
+    orderTv.setText(position + "");    
+    titleTv.setText(track.getTrackTitle());    playCountTv.setText(track.getPlayCount() + "");    
+    int durationMil = track.getDuration() * 1000;    
+    String duration = mDurationFormat.format(durationMil);    durationTv.setText(duration);    
+    String updateTimeText = mUpdateDateFormat.format(track.getUpdatedAt());    updateDateTv.setText(updateTimeText);}
+```
+
+
+
+p28>为实现详情页DetailActivity 数据加载四种状态：正在加载、成功、数据为空、网络错误
+
+将RecycleView 放到 Framlayout 帧布局中 作为container，并且将Framlayout.inlfater(mUiLoader) 通过判断数据的状态、改变UiLoader的状态。
+
+最后将 mUiLoader 加载到DetailActivity中。
 

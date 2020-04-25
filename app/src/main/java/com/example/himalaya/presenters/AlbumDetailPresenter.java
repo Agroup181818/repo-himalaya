@@ -18,21 +18,21 @@ import java.util.Map;
 
 public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
-    private static final String TAG ="AlbumDetailPresenter" ;
+    private static final String TAG = "AlbumDetailPresenter";
     private List<IAlbumDetailViewCallback> mCallbacks = new ArrayList<>();
 
     private Album mTargetAlbum = null;
 
-    private AlbumDetailPresenter(){
+    private AlbumDetailPresenter() {
 
     }
 
     private static AlbumDetailPresenter sInstance = null;
 
-    public static AlbumDetailPresenter getInstance(){
-        if(sInstance==null){
-            synchronized (AlbumDetailPresenter.class){
-                if(sInstance == null){
+    public static AlbumDetailPresenter getInstance() {
+        if (sInstance == null) {
+            synchronized (AlbumDetailPresenter.class) {
+                if (sInstance == null) {
                     sInstance = new AlbumDetailPresenter();
                 }
             }
@@ -54,14 +54,11 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     public void getAlbumDetail(int albumId, int page) {
         //根据页码和专辑id获取列表
 
-
-
         Map<String, String> map = new HashMap<String, String>();
-        map.put(DTransferConstants.ALBUM_ID, albumId+"");
+        map.put(DTransferConstants.ALBUM_ID, albumId + "");
         map.put(DTransferConstants.SORT, "asc");
-        map.put(DTransferConstants.PAGE, page+"");
-        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT+"");
-
+        map.put(DTransferConstants.PAGE, page + "");
+        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
 
         CommonRequest.getTracks(map, new IDataCallBack<TrackList>() {
             @Override
@@ -70,7 +67,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
                 if (trackList != null) {
                     List<Track> tracks = trackList.getTracks();
-                    LogUtil.d(TAG,"tracks -->"+tracks);
+                    LogUtil.d(TAG, "tracks -->" + tracks);
 
                     handlerAlbumDetailResult(tracks);
                 }
@@ -79,15 +76,24 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                LogUtil.d(TAG,"errorCode -->  "+errorCode);
-                LogUtil.d(TAG,"errorMsg -->  "+errorMsg);
-
+                LogUtil.d(TAG, "errorCode -->  " + errorCode);
+                LogUtil.d(TAG, "errorMsg -->  " + errorMsg);
+                handleError(errorCode, errorMsg);
             }
         });
 
 
+    }
 
-
+    /**
+     * 如果发生错误就通知UI
+     * @param errorCode
+     * @param errorMsg
+     */
+    private void handleError(int errorCode, String errorMsg) {
+        for (IAlbumDetailViewCallback callback : mCallbacks) {
+            callback.onNetworkError(errorCode, errorMsg);
+        }
     }
 
     private void handlerAlbumDetailResult(List<Track> tracks) {
@@ -100,11 +106,11 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
     @Override
     public void registerViewCallback(IAlbumDetailViewCallback detailViewCallback) {
-       if(!mCallbacks.contains(detailViewCallback)) {
-           mCallbacks.add(detailViewCallback);
-           if(mTargetAlbum!=null){
-               detailViewCallback.onAlbumLoaded(mTargetAlbum);
-           }
+        if (!mCallbacks.contains(detailViewCallback)) {
+            mCallbacks.add(detailViewCallback);
+            if (mTargetAlbum != null) {
+                detailViewCallback.onAlbumLoaded(mTargetAlbum);
+            }
 
         }
 
@@ -115,7 +121,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
         mCallbacks.remove(detailViewCallback);
     }
 
-    public void setTargetAlbum(Album targetAlbum){
+    public void setTargetAlbum(Album targetAlbum) {
         this.mTargetAlbum = targetAlbum;
     }
 }
