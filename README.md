@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P43(有问题PlayerActivity.java 55行)
+已完成进度P43
 =======
 配置build.gradle 中阿里镜像
 
@@ -884,4 +884,25 @@ mTrackPagerView = this.findViewById(R.id.track_pager_view);
         mTrackPagerAdapter = new PlayerTrackPagerAdapter();
         //设置适配器
         mTrackPagerView.setAdapter(mTrackPagerAdapter);
+```
+
+找到图片的链接并加载到布局上
+```
+
+public Object instantiateItem(@NonNull ViewGroup container, int position) {
+
+        View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.item_track_pager, container, false);
+        LogUtil.d(TAG,"container.getContext()== "+container.getContext());
+
+        container.addView(itemView);
+        //设置数据
+        //找到控件
+        ImageView item = itemView.findViewById(R.id.track_pager_item);
+        //设置图片
+        Track track = mData.get(position);
+        String coverUrlLarge = track.getCoverUrlLarge();
+        Picasso.with(container.getContext()).load(coverUrlLarge).into(item);
+        //Picasso.get( ).Load(url).into( ).
+        return itemView;
+    }
 ```
