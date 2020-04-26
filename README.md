@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P37
+已完成进度P43(有问题PlayerActivity.java 55行)
 =======
 配置build.gradle 中阿里镜像
 
@@ -800,3 +800,88 @@ P37播放器状态相关的接口方法
 mPlayerManager.addPlayerStatusListener(this);
 ```
 
+给控件设置相关事件
+```
+/**
+     * 给控件设置相关事件
+     */
+    private void initEven() {
+        mControlBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //如果现在的状态是播放的，就暂停
+                if (mPlayerPresenter.isPlay()) {
+                    mPlayerPresenter.pause();
+                } else {
+                    //如果是暂停状态，则播放
+                    mPlayerPresenter.play();
+                }
+            }
+        });
+
+        mDurationBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean isFromUser) {
+                if (isFromUser) {
+                    mCurrentProgress = progress;
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mIsUserTouchProgressBar = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //手离开拖动进度条的时候更新进度
+                mIsUserTouchProgressBar = false;
+                mPlayerPresenter.seekTo(mCurrentProgress);
+
+            }
+        });
+
+        mPlayPreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //播放前一个节目
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playPre();
+                }
+            }
+        });
+
+
+        mPlayNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //播放下一个节目
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playNext();
+                }
+            }
+        });
+
+
+    }
+```
+P42获取标题
+```
+if (curModel instanceof Track) {
+            Track currentTrack=(Track)curModel;
+            //LogUtil.d(TAG,"title ==> "+currentTrack.getTrackTitle());
+            //更新UI
+            for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+                iPlayerCallback.onTrackTitleUpdate(currentTrack.getTrackTitle());
+            }
+        }
+```
+
+P43设置适配器
+```
+mTrackPagerView = this.findViewById(R.id.track_pager_view);
+        //创建适配器
+        mTrackPagerAdapter = new PlayerTrackPagerAdapter();
+        //设置适配器
+        mTrackPagerView.setAdapter(mTrackPagerAdapter);
+```

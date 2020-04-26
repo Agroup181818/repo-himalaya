@@ -28,7 +28,7 @@ public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
     /**
      * 播放下一首
      */
-    void playNest();
+    void playNext();
 
     /**
      * 切换播放类型
@@ -52,4 +52,14 @@ public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
      * @param progress
      */
     void seekTo(int progress);
+
+    /**
+     * 判断播放器是否正在播放
+     * @return
+     */
+    boolean isPlay();
+
+
+
+
 }
