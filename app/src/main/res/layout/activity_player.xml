@@ -81,19 +81,19 @@
                 android:id="@+id/play_pre"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:src="@mipmap/previous"
+                android:src="@drawable/selector_palyer_pre"
                 android:layout_height="20dp" />
             <ImageView
                 android:id="@+id/play_or_pause_btn"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:src="@mipmap/play"
+                android:src="@drawable/selector_palyer_play"
                 android:layout_height="35dp" />
             <ImageView
                 android:id="@+id/play_next"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:src="@mipmap/next_press"
+                android:src="@drawable/selector_palyer_next"
                 android:layout_height="20dp" />
             <ImageView
                 android:layout_width="0dp"

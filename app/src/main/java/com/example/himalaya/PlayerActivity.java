@@ -2,6 +2,8 @@ package com.example.himalaya;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -14,6 +16,7 @@ import com.example.himalaya.adapters.PlayerTrackPagerAdapter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.interfaces.IPlayerCallback;
 import com.example.himalaya.presenters.PlayerPresenter;
+import com.example.himalaya.utils.LogUtil;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.service.XmPlayListControl;
 
@@ -21,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 
-public class PlayerActivity extends BaseActivity implements IPlayerCallback {
+public class PlayerActivity extends BaseActivity implements IPlayerCallback, ViewPager.OnPageChangeListener {
 
     private static final String TAG = "PlayerActivity";
     private ImageView mControlBtn;
@@ -40,6 +43,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
     private String mTrackTitleText;
     private ViewPager mTrackPagerView;
     private PlayerTrackPagerAdapter mTrackPagerAdapter;
+    private boolean mIsUserSlidePager = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,15 +53,12 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
 
-
         initView();
         //在界面初始化之后，采取获取数据
         mPlayerPresenter.getPlayList();
 
-
-
         initEven();
-        startPlay();
+
     }
 
 
@@ -71,14 +72,6 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
         }
     }
 
-    /**
-     * 开始播放
-     */
-    private void startPlay() {
-        if (mPlayerPresenter != null) {
-            mPlayerPresenter.play();
-        }
-    }
 
 
     /**
@@ -141,7 +134,23 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
             }
         });
 
+        mTrackPagerView.addOnPageChangeListener(this);
 
+        mTrackPagerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN :
+                        mIsUserSlidePager = true;
+                        break;
+                    case MotionEvent.ACTION_UP :
+                        break;
+
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -164,33 +173,29 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
         mTrackPagerAdapter = new PlayerTrackPagerAdapter();
         //设置适配器
         mTrackPagerView.setAdapter(mTrackPagerAdapter);
+
     }
 
     @Override
     public void onPlayStart() {
         //开始播放，修改UI为暂停按键
         if (mControlBtn != null) {
-
-            mControlBtn.setImageResource(R.mipmap.stop);
+            mControlBtn.setImageResource(R.drawable.selector_palyer_stop);
         }
     }
 
     @Override
     public void onPlayPause() {
         if (mControlBtn != null) {
-            mControlBtn.setImageResource(R.mipmap.play);
-
+            mControlBtn.setImageResource(R.drawable.selector_palyer_play);
         }
-
     }
 
     @Override
     public void onPlayStop() {
         if (mControlBtn != null) {
-            mControlBtn.setImageResource(R.mipmap.play);
-
+            mControlBtn.setImageResource(R.drawable.selector_palyer_play);
         }
-
     }
 
     @Override
@@ -264,7 +269,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
     }
 
     @Override
-    public void onTrackUpdate (Track track){
+    public void onTrackUpdate (Track track,int playindex){
         this.mTrackTitleText=track.getTrackTitle();
 
         if (mTrackTitleTv != null) {
@@ -272,5 +277,29 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
             mTrackTitleTv.setText(mTrackTitleText);
         }
         //当节目改变的时候，获取到当前播放中播放位置
+        //当前节目改变以后、修改页面图片
+        if (mTrackPagerView != null) {
+            mTrackPagerView.setCurrentItem(playindex , true);
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        LogUtil.d(TAG , "position -------> " + position);
+        //当页面被选择，就去切换播放内容
+        if (mPlayerPresenter != null && mIsUserSlidePager) {
+            mPlayerPresenter.playByIndex(position);
+        }
+        mIsUserSlidePager = false;
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

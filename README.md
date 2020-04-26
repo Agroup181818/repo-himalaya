@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P43
+已完成进度P46
 =======
 配置build.gradle 中阿里镜像
 
@@ -905,4 +905,51 @@ public Object instantiateItem(@NonNull ViewGroup container, int position) {
         //Picasso.get( ).Load(url).into( ).
         return itemView;
     }
+```
+
+p44 在IPlayerCallback 接口中增加方法onPageSelected
+
+并在PlayerActivity中回调、播放节目变动时，修改页面图片。
+
+为播放页面设置监听、监听手势滑动。
+
+```
+@Override
+public void onPageSelected(int position) {
+    LogUtil.d(TAG , "position -------> " + position);
+    //当页面被选择，就去切换播放内容
+    if (mPlayerPresenter != null && mIsUserSlidePager) {
+        mPlayerPresenter.playByIndex(position);
+    }
+    mIsUserSlidePager = false;
+}
+```
+
+p45 存在bug：过早调用mPlayerManage.play()、导致如果一首节目正在播放、点击第二首无法正常播放。PlyaerManage 准备完成状态后prepared、调用play播放才正常。
+
+解决：删除PlayerAcitivity中的play方法。
+
+在PlayerPresenter 逻辑层 onSoundPrepared() 方法中调用play。
+
+```
+@Override
+public void onSoundPrepared() {
+    LogUtil.d(TAG, "onSoundPrepared..");
+    if (mPlayerManager.getPlayerStatus() == PlayerConstants.STATE_PREPARED) {
+        //播放器准备完成、可以去播放
+        mPlayerManager.play();
+    }
+}
+```
+
+p46 增加动画效果
+
+在drawable中增加点击切换icon实现动画:上一首、下一首、播放、暂停
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@mipmap/next_pressed" android:state_pressed="true"/>
+    <item android:drawable="@mipmap/next_normal"  />
+</selector>
 ```
