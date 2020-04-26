@@ -50,12 +50,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback {
         mPlayerPresenter.registerViewCallback(this);
 
 
-        //在界面初始化之后，采取获取数据
-
-        //???????
-        mPlayerPresenter.getPlayList();
         initView();
-        //???????
+        //在界面初始化之后，采取获取数据
+        mPlayerPresenter.getPlayList();
+
 
 
         initEven();
