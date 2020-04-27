@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P51
+已完成进度P64
 =======
 配置build.gradle 中阿里镜像
 
@@ -1044,4 +1044,159 @@ P51 播放列表的关闭
 setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 setOutsideTouchable(true);
 ```
+P52圆角列表样式
+```
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
+    <corners android:topRightRadius="20dp"
+        android:topLeftRadius="20dp"/>
+
+
+    <solid android:color="#afafaf"/>
+</shape>
+```
+P53处理pop窗体的透明度
+```
+mPlayListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO:展示播放列表
+                mSobPopWindow.showAtLocation(view, Gravity.BOTTOM,0,0);
+                //处理一下背景，一点透明度
+                updateBgAlpha(0.8f);
+            }
+        });
+        mSobPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //pop窗体消失以后，恢复透明度
+                updateBgAlpha(1.0f);
+
+            }
+        });
+```
+
+P54进入和退出的动画效果
+```
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/main_color</item>
+        <item name="colorPrimaryDark">@color/main_color</item>
+        <item name="colorAccent">@color/main_color</item>
+    </style>
+    <style name="pop_animation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">
+            @anim/pop_in
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/pop_out
+        </item>
+    </style>
+</resources>
+```
+
+pop_out.xml
+```
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <translate android:fromYDelta="0"
+        android:toYDelta="100%"
+        android:duration="300"
+        />
+
+    <alpha android:fromAlpha="1.0"
+        android:duration="300"
+        android:toAlpha="0.8"/>
+</set>
+```
+P55加载动画initAnimation
+```
+private void initBgAnimation() {
+        mEnterBgAnimator = ValueAnimator.ofFloat(1.0f, 0.7f);
+        mEnterBgAnimator.setDuration(BG_ANIMATION_DURATION);
+        mEnterBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value  = (float) animation.getAnimatedValue();
+                //处理一下背景，一点透明度
+                updateBgAlpha(value);
+
+            }
+        });
+        //退出的
+        mOutBgAnimator = ValueAnimator.ofFloat(0.7f,1.0f);
+        mOutBgAnimator.setDuration(BG_ANIMATION_DURATION);
+        mOutBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value  = (float) animation.getAnimatedValue();
+                updateBgAlpha(value);
+
+            }
+        });
+    }
+```
+P59列表布局设计
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/play_icon_iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:src="@mipmap/playlist_playing_icon" />
+
+
+        <TextView
+            android:id="@+id/track_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:maxLines="1"
+            android:text="我是标题"
+            android:textColor="@color/play_list_text_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <VideoView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="16dp"
+        android:background="@color/play_list_line_color" />
+
+
+</LinearLayout>
+```
+
+
+P60为列表设置位置改变的相应效果
+```
+public void setCurrentPlayPosition(int position){
+        if (mPlayListAdapter != null) {
+            //设置播放列表当前播放的位置
+         mPlayListAdapter.setCurrentPlayPosition(position);
+
+        }
+    }
+```

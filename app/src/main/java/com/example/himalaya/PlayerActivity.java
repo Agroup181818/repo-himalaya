@@ -1,12 +1,16 @@
 package com.example.himalaya;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -72,6 +76,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
     private View mPlayListBtn;
     private SobPopWindow mSobPopWindow;
+    private ValueAnimator mEnterBgAnimator;
+    private ValueAnimator mOutBgAnimator;
+    public final int BG_ANIMATION_DURATION=800;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +94,32 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         mPlayerPresenter.getPlayList();
 
         initEven();
+        initBgAnimation();
+    }
 
+    private void initBgAnimation() {
+        mEnterBgAnimator = ValueAnimator.ofFloat(1.0f, 0.7f);
+        mEnterBgAnimator.setDuration(BG_ANIMATION_DURATION);
+        mEnterBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value  = (float) animation.getAnimatedValue();
+                //处理一下背景，一点透明度
+                updateBgAlpha(value);
+
+            }
+        });
+        //退出的
+        mOutBgAnimator = ValueAnimator.ofFloat(0.7f,1.0f);
+        mOutBgAnimator.setDuration(BG_ANIMATION_DURATION);
+        mOutBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value  = (float) animation.getAnimatedValue();
+                updateBgAlpha(value);
+
+            }
+        });
     }
 
 
@@ -198,9 +230,43 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             public void onClick(View view) {
                 //TODO:展示播放列表
                 mSobPopWindow.showAtLocation(view, Gravity.BOTTOM,0,0);
+
+                //修改背景的透明度，有一个渐变的过程
+                mEnterBgAnimator.start();
+
+            }
+        });
+        mSobPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //pop窗体消失以后，恢复透明度
+                mOutBgAnimator.start();
+
+
+            }
+        });
+
+        mSobPopWindow.setPlayListItemClickListener(new SobPopWindow.PlayListItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                //播放列表里的item被点击了
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playByIndex(position);
+                }
             }
         });
     }
+
+
+
+    public void updateBgAlpha(float alpha){
+        Window window = getWindow();
+        WindowManager.LayoutParams attributes=window.getAttributes();
+        attributes.alpha = alpha;
+        window.setAttributes(attributes);
+    }
+
+
 
     /**
      * 根据当前的状态，更新播放图标
@@ -300,6 +366,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mTrackPagerAdapter != null) {
         mTrackPagerAdapter.setData(list);
         }
+        //数据回来以后，也要给播放列表一份
+        if (mSobPopWindow != null) {
+        mSobPopWindow.setListData(list);
+
+        }
     }
 
     @Override
@@ -363,6 +434,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         //当前节目改变以后、修改页面图片
         if (mTrackPagerView != null) {
             mTrackPagerView.setCurrentItem(playindex , true);
+        }
+
+        //修改播放列表里的播放位置
+        if (mSobPopWindow != null) {
+            mSobPopWindow.setCurrentPlayPosition(playindex);
         }
     }
 
