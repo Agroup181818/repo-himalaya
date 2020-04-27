@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P46
+已完成进度P51
 =======
 配置build.gradle 中阿里镜像
 
@@ -953,3 +953,95 @@ p46 增加动画效果
     <item android:drawable="@mipmap/next_normal"  />
 </selector>
 ```
+
+P47 播放模式的切换
+
+点击事件
+
+```
+mPlayModeSwitchBtn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        //根据当前的mode获取到下一个mode
+        XmPlayListControl.PlayMode playMode = sPlayModeRule.get(mCurrentMode);
+        //修改播放模式
+        if (mPlayerPresenter != null) {
+            mPlayerPresenter.switchPlayMode(playMode);
+            mCurrentMode = playMode;
+            updatePlayModeBtnImg();
+        }
+        mCurrentMode = playMode;
+    }
+});
+```
+
+图标切换
+
+```
+/**
+ * 根据当前的状态，更新播放图标
+ * PLAY_MODEL_LIST
+ * ：PLAY_MODEL_LIST_LOOP
+ * ：PLAY_MODEL_RANDOM
+ * ：PLAY_MODEL_SINGLE_LOOP
+ */
+private void updatePlayModeBtnImg() {
+    int resId = R.drawable.selector_paly_mode_list_order;
+    switch (mCurrentMode){
+        case PLAY_MODEL_LIST:
+            resId = R.drawable.selector_paly_mode_list_order;
+            break;
+        case PLAY_MODEL_RANDOM:
+            resId = R.drawable.selector_paly_mode_random;
+            break;
+        case PLAY_MODEL_LIST_LOOP:
+            resId = R.drawable.selector_paly_mode_list_order_looper;
+            break;
+        case PLAY_MODEL_SINGLE_LOOP:
+            resId = R.drawable.selector_paly_mode_single_loop;
+            break;
+    }
+    mPlayModeSwitchBtn.setImageResource(resId);
+}
+```
+
+P48 回显播放模式UI设计
+
+呃 这个太tm乱了 不写了....
+
+P49 回显模式播放器设置
+
+P50 节目列表弹出
+
+设置点击事件
+
+```
+mPlayListBtn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        //TODO:展示播放列表
+        mSobPopWindow.showAtLocation(view, Gravity.BOTTOM,0,0);
+    }
+});
+```
+
+```
+public SobPopWindow(){
+    //设置它的宽高
+    super(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+    //载进来view
+    View popView = LayoutInflater.from(BaseApplication.getAppContext()).inflate(R.layout.pop_play_list, null);
+    //设置内容
+    setContentView(popView);
+}
+```
+
+P51 播放列表的关闭
+
+```
+//这里要注意，设置这个属性前要设置setBackGroundDrable
+//否则点击外部无法关闭pop.
+setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+setOutsideTouchable(true);
+```
+

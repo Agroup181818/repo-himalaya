@@ -73,9 +73,10 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/player_mode_switch_btn"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:src="@mipmap/sort_descending"
+                android:src="@drawable/selector_paly_mode_list_order"
                 android:layout_height="20dp" />
             <ImageView
                 android:id="@+id/play_pre"
@@ -96,9 +97,10 @@
                 android:src="@drawable/selector_palyer_next"
                 android:layout_height="20dp" />
             <ImageView
+                android:id="@+id/player_list"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:src="@mipmap/player_icon_list_press"
+                android:src="@drawable/selector_palyer_list"
                 android:layout_height="20dp" />
         </LinearLayout>
         </LinearLayout>
