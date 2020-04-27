@@ -1200,3 +1200,58 @@ public void setCurrentPlayPosition(int position){
         }
     }
 ```
+
+p65 实现pop列表切换播放模式：顺序循环、列表循环、随机循环、单曲循环
+
+通过在SobPopWindow中暴露接口PlayListPlayModeClickListener实现点击切换播放模式
+
+p66 图标icon和文字同时改变
+
+改变播放模式方法中、实现更新图标UI和文字
+
+```
+@Override
+public void onPlayModeChange(XmPlayListControl.PlayMode playMode) {
+    //更新播放模式并且修改UI
+    mCurrentMode =playMode;
+    //更新pop里的播放模式
+    mSobPopWindow.updatePlayMode(mCurrentMode);
+    updatePlayModeBtnImg();
+}
+```
+
+p67 实现pop列表的顺序和逆序切换
+
+修改SobPopWindow的接口PlayListPlayModeClickListener ==>PlayListActionListener
+
+实现两个方法
+
+```
+public interface PlayListActionListener {
+    //播放模式被点击
+    void onPlayModeClick();
+
+    //播放逆序、顺序切换按钮被点击
+    void onOrderClick();
+}
+```
+
+通过set 方法设置接口、并在PlayerActivity 实现点击逻辑。
+
+```
+mSobPopWindow.setPlayListActionListener(new SobPopWindow.PlayListActionListener() {
+    @Override
+    public void onPlayModeClick() {
+        //todo:切换播放模式
+        switchPlayMode();
+    }
+
+    @Override
+    public void onOrderClick() {
+        //点击了切换顺序和逆序
+        Toast.makeText(PlayerActivity.this ,"切换列表顺序",Toast.LENGTH_SHORT).show();
+        mSobPopWindow.updateOrderIcon(!testOrder);
+        testOrder = !testOrder;
+    }
+});
+```
