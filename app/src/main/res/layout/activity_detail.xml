@@ -52,13 +52,17 @@
         </ImageView>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="100dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="2dp"
-            android:layout_toRightOf="@+id/detail_play_control"
-            android:text="继续播放"
+            android:layout_marginStart="2dp"
+            android:layout_toEndOf="@+id/detail_play_control"
+            android:text="@string/click_play_tips_text"
             android:id="@+id/play_control_tv"
+            android:singleLine="true"
             android:textSize="14sp" />
 
 
@@ -67,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="4dp"
-            android:layout_toLeftOf="@+id/detail_arrow"
+            android:layout_toStartOf="@+id/detail_arrow"
             android:text="选集"
             android:textSize="14sp" />
 
@@ -90,7 +94,7 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_below="@+id/iv_large_cover"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="-40dp"
         android:scaleType="fitXY" />
 
@@ -98,9 +102,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_large_cover"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="-30dp"
-        android:layout_toRightOf="@+id/viv_small_cover"
+        android:layout_toEndOf="@+id/viv_small_cover"
         android:orientation="vertical">
 
         <TextView
@@ -115,7 +119,7 @@
             android:id="@+id/tv_album_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:text="这是作者"
             android:textColor="@color/sub_text_title"
             android:textSize="12sp" />

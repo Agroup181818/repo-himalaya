@@ -12,8 +12,8 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/album_cover"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/album_cover"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         
@@ -41,7 +41,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:layout_height="wrap_content">
 
 
@@ -53,17 +53,17 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="6dp"
+                    android:layout_width="10dp"
                     android:src="@mipmap/play_info_icon"
-                    android:layout_height="6dp" />
+                    android:layout_height="10dp" />
                 <TextView
-                    android:layout_width="45dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="234.5万"
                     android:id="@+id/album_play_count"
-                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
                     android:textColor="#ff848484"
-                    android:textSize="7sp"
+                    android:textSize="10sp"
                     />
             </LinearLayout>
 
@@ -75,17 +75,17 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="6dp"
+                    android:layout_width="10dp"
                     android:src="@mipmap/ic_sound"
-                    android:layout_height="6dp" />
+                    android:layout_height="10dp" />
                 <TextView
-                    android:layout_width="45dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="23集"
                     android:id="@+id/album_contend_size"
-                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
                     android:textColor="#ff848484"
-                    android:textSize="7sp"
+                    android:textSize="10sp"
                     />
             </LinearLayout>
 

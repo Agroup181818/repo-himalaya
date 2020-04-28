@@ -14,7 +14,9 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P71
+已完成进度P78
+=======
+修改了一些布局，图标大小什么的，视觉效果更好，比例更好一点
 =======
 配置build.gradle 中阿里镜像
 
@@ -1370,4 +1372,147 @@ private void handleNoPlayList() {
     mPlayerPresenter.setPlayList(mCurrentTracks,DEFAULT_PLAY_INDEX);
 }
 ```
+
+
+P73添加刷新框架的依赖
+```
+    implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+
+```
+
+更改之前的布局文件
+```
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+        android:id="@+id/refresh_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/album_detail_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+
+
+    </FrameLayout>
+```
+刷新事件添加监听
+```
+mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onRefresh(TwinklingRefreshLayout refreshLayout) {
+                super.onRefresh(refreshLayout);
+                BaseApplication.getsHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(DetailActivity.this,"刷新成功...",Toast.LENGTH_SHORT).show();
+                        mRefreshLayout.onFinishRefresh();
+                    }
+                },2000);
+            }
+
+            @Override
+            public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
+                super.onLoadMore(refreshLayout);
+
+                BaseApplication.getsHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(DetailActivity.this,"开始上拉加载更多...",Toast.LENGTH_SHORT).show();
+                        mRefreshLayout.onFinishLoadMore();
+
+                    }
+                },2000);
+
+
+            }
+        });
+```
+实现doLoad上拉加载更多的功能
+```
+private void doLoaded(final boolean isLoaderMore) {
+        Map<String, String> map = new HashMap<>();
+        map.put(DTransferConstants.SORT, "asc");
+        map.put(DTransferConstants.ALBUM_ID, mCurrentAlbumId+"");
+        map.put(DTransferConstants.PAGE, mCurrentPageIndex + "");
+        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
+        CommonRequest.getTracks(map, new IDataCallBack<TrackList>() {
+            @Override
+            public void onSuccess(TrackList trackList) {
+                if (trackList != null) {
+                    List<Track> tracks = trackList.getTracks();
+                    LogUtil.d(TAG, "tracks -->" + tracks);
+
+                    if (isLoaderMore) {
+                        //上拉加载，结果放到后面去
+                    mTracks.addAll(tracks);
+
+                    }
+                    else {
+                        //这个是下载加载，结果放到前面去
+                        mTracks.addAll(0,tracks);
+                    }
+                    handlerAlbumDetailResult(mTracks);
+                }
+            }
+
+            public void onError(int errorCode, String errorMsg) {
+                if (isLoaderMore) {
+                    mCurrentPageIndex--;
+                }
+                LogUtil.d(TAG, "errorCode -->  " + errorCode);
+                LogUtil.d(TAG, "errorMsg -->  " + errorMsg);
+                handleError(errorCode, errorMsg);
+            }
+        });
+
+        }
+```
+
+实现跑马灯效果
+```
+android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+```
+
+根据播放状态修改名字
+```
+//根据播放状态修改图标和文字
+    private void updatePlayState(boolean playing) {
+        if(mPlayControlBtn!=null&&mPlayControlTips!=null){
+
+            mPlayControlBtn.setImageResource(playing?R.drawable.selector_play_control_pause:R.drawable.selector_play_control_play);
+
+            if (!playing) {
+                mPlayControlTips.setText(R.string.click_play_tips_text);
+            } else {
+                if (!TextUtils.isEmpty(mCurrentTrackTitle)) {
+                    mPlayControlTips.setText(mCurrentTrackTitle);
+
+                }
+
+            }
+
+        }
+    }
+```
+详情界面处理刷新结果
+```
+public void onLoaderMoreFinished(int size) {
+        if (size > 0) {
+            Toast.makeText(this, "成功加载" + size + "条节目", Toast.LENGTH_SHORT).show();
+        } else {
+
+            Toast.makeText(this, "没有更多节目", Toast.LENGTH_SHORT).show();
+        }
+    }
+```
+
 
