@@ -3,7 +3,6 @@ package com.example.himalaya;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
@@ -144,7 +142,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             @Override
             public void onClick(View v) {
                 //如果现在的状态是播放的，就暂停
-                if (mPlayerPresenter.isPlay()) {
+                if (mPlayerPresenter.isPlaying()) {
                     mPlayerPresenter.pause();
                 } else {
                     //如果是暂停状态，则播放
@@ -262,14 +260,14 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             @Override
             public void onOrderClick() {
                 //点击了切换顺序和逆序
-                Toast.makeText(PlayerActivity.this ,"切换列表顺序",Toast.LENGTH_SHORT).show();
-                mSobPopWindow.updateOrderIcon(!testOrder);
-                testOrder = !testOrder;
+                //Toast.makeText(PlayerActivity.this ,"切换列表顺序",Toast.LENGTH_SHORT).show();
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.reversePlayList();
+                }
             }
         });
     }
 
-    private boolean testOrder = false;
 
     private void switchPlayMode() {
         //根据当前的mode获取到下一个mode
@@ -298,10 +296,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
      * ：PLAY_MODEL_SINGLE_LOOP
      */
     private void updatePlayModeBtnImg() {
-        int resId = R.drawable.selector_paly_mode_list_order;
+        int resId = R.drawable.selector_paly_mode_list_revers;
         switch (mCurrentMode){
             case PLAY_MODEL_LIST:
-                resId = R.drawable.selector_paly_mode_list_order;
+                resId = R.drawable.selector_paly_mode_list_revers;
                 break;
             case PLAY_MODEL_RANDOM:
                 resId = R.drawable.selector_paly_mode_random;
@@ -463,6 +461,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mSobPopWindow != null) {
             mSobPopWindow.setCurrentPlayPosition(playindex);
         }
+    }
+
+    @Override
+    public void updateListOrder(boolean isReverse) {
+        mSobPopWindow.updateOrderIcon(isReverse);
     }
 
     @Override

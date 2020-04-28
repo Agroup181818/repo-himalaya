@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -135,11 +134,11 @@ public class SobPopWindow extends PopupWindow {
 
     /**
      * 更新切换列表顺序和逆序按钮和文字
-     * @param isOrder
+     * @param isReverse
      */
-    public void updateOrderIcon(boolean isOrder){
-        mOrderIcon.setImageResource(isOrder ? R.drawable.selector_paly_mode_list_order : R.drawable.selector_paly_mode_list_revers);
-        mOrderText.setText(BaseApplication.getAppContext().getResources().getString(isOrder ? R.string.order_text:R.string.revers_text));
+    public void updateOrderIcon(boolean isReverse){
+        mOrderIcon.setImageResource(isReverse ? R.drawable.selector_paly_mode_list_order : R.drawable.selector_paly_mode_list_revers);
+        mOrderText.setText(BaseApplication.getAppContext().getResources().getString(isReverse ? R.string.order_text:R.string.revers_text));
     }
 
     /**
@@ -150,11 +149,11 @@ public class SobPopWindow extends PopupWindow {
      * ：PLAY_MODEL_SINGLE_LOOP
      */
     private void updatePlayModeBtnImg(XmPlayListControl.PlayMode playMode) {
-        int resId = R.drawable.selector_paly_mode_list_order;
+        int resId = R.drawable.selector_paly_mode_list_revers;
         int textId = R.string.play_mode_order_text;
         switch (playMode){
             case PLAY_MODEL_LIST:
-                resId = R.drawable.selector_paly_mode_list_order;
+                resId = R.drawable.selector_paly_mode_list_revers;
                 textId = R.string.play_mode_order_text;
                 break;
             case PLAY_MODEL_RANDOM:

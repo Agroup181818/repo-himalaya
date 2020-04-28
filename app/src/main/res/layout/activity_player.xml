@@ -76,7 +76,7 @@
                 android:id="@+id/player_mode_switch_btn"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:src="@drawable/selector_paly_mode_list_order"
+                android:src="@drawable/selector_paly_mode_list_revers"
                 android:layout_height="20dp" />
             <ImageView
                 android:id="@+id/play_pre"

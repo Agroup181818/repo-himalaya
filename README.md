@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P64
+已完成进度P71
 =======
 配置build.gradle 中阿里镜像
 
@@ -1255,3 +1255,119 @@ mSobPopWindow.setPlayListActionListener(new SobPopWindow.PlayListActionListener(
     }
 });
 ```
+
+P68播放列表顺序播放逻辑
+
+```
+@Override
+public void reversePlayList() {
+    //把播放列表反转
+    List<Track> playList = mPlayerManager.getPlayList();
+    Collections.reverse(playList);
+    //第一个参数是播放列表，第二个参数是开始播放的下标
+    //新的下标=总的内容个数-1-当前下标
+    mCurrentIndex = playList.size()-1-mCurrentIndex;
+    mPlayerManager.setPlayList(playList,mCurrentIndex);
+    //跟新UI
+    mCurrentTrack = (Track) mPlayerManager.getCurrSound();
+    for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
+        iPlayerCallback.onListLoaded(playList);
+        iPlayerCallback.onTrackUpdate(mCurrentTrack,mCurrentIndex);
+    }
+}
+```
+
+P69 专辑详情界面控制播放状态
+
+UI
+
+```
+@Override
+public void onPlayStart() {
+    //开始播放，修改UI为暂停按键
+    if (mControlBtn != null) {
+        mControlBtn.setImageResource(R.drawable.selector_palyer_stop);
+    }
+}
+
+@Override
+public void onPlayPause() {
+    if (mControlBtn != null) {
+        mControlBtn.setImageResource(R.drawable.selector_palyer_play);
+    }
+}
+
+@Override
+public void onPlayStop() {
+    if (mControlBtn != null) {
+        mControlBtn.setImageResource(R.drawable.selector_palyer_play);
+    }
+}
+```
+
+控制
+
+```
+private void initListener() {
+    mPlayControlBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            //控制播放器的状态
+            if (mPlayerPresenter.isPlaying()) {
+                //正在播放，那么就暂停
+                mPlayerPresenter.pause();
+            }else {
+                mPlayerPresenter.play();
+            }
+        }
+    });
+}
+```
+
+P70解决专辑详细默认播放状态的问题
+
+在onCreate加入
+
+```
+updatePlayState(mPlayerPresenter.isPlaying());
+```
+
+将代码抽取，减少代码冗余
+
+```
+//根据播放状态修改图标和文字
+private void updatePlayState(boolean playing) {
+    if(mPlayControlBtn!=null&&mPlayControlTips!=null){
+        mPlayControlBtn.setImageResource(playing?R.drawable.selector_play_control_pause:R.drawable.selector_play_control_play);
+        mPlayControlTips.setText(playing?R.string.playing_tips_text:R.string.pause_tips_text);
+    }
+}
+```
+
+P71 详情界面播放默认内容
+
+```
+@Override
+public void onClick(View view) {
+    if (mPlayerPresenter != null) {
+        //判断播放器是否有播放列表
+        //
+        boolean has = mPlayerPresenter.hasPlayList();
+        if (has) {
+            //控制播放器的状态
+            handlePlayControl();
+        }else {
+            handleNoPlayList();
+        }
+    }
+```
+
+```
+/**
+ * 当播放器里面没有播放内容，我们要进行一个处理
+ */
+private void handleNoPlayList() {
+    mPlayerPresenter.setPlayList(mCurrentTracks,DEFAULT_PLAY_INDEX);
+}
+```
+
