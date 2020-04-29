@@ -14,7 +14,7 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P78
+已完成进度P81
 =======
 修改了一些布局，图标大小什么的，视觉效果更好，比例更好一点
 =======
@@ -1515,4 +1515,74 @@ public void onLoaderMoreFinished(int size) {
     }
 ```
 
+P79-81 增加主界面底部的播放条、编写布局页面、init 控件。
 
+```
+//播放控制相关的
+mRoundRectImageView = this.findViewById(R.id.main_track_cover);
+mHeaderTitle = this.findViewById(R.id.main_head_title);
+mHeaderTitle.setSelected(true);
+mSubTitle = this.findViewById(R.id.main_sub_title);
+mPlayControl = this.findViewById(R.id.main_play_control);
+```
+
+为播放条注册修改UI的接口、结束时销毁
+
+```
+private void initPresenter() {
+    mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
+    mPlayerPresenter.registerViewCallback(this)
+
+}
+```
+
+```
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    if (mPlayerPresenter != null) {
+        mPlayerPresenter.unRegisterViewCallback(this);
+    }
+}
+```
+
+播放歌曲时、为控件设置数据
+
+```
+@Override
+public void onTrackUpdate(Track track, int playIndex) {
+    if (track != null) {
+        String trackTitle = track.getTrackTitle();
+        String nickname = track.getAnnouncer().getNickname();
+        String coverUrlMiddle = track.getCoverUrlMiddle();
+        if (mHeaderTitle != null) {
+            mHeaderTitle.setText(trackTitle);
+        }
+        if (mSubTitle != null) {
+            mSubTitle.setText(nickname);
+        }
+        Picasso.with(this).load(coverUrlMiddle).into(mRoundRectImageView);
+
+        LogUtil.d(TAG, "trackTitle -----> " + trackTitle);
+        LogUtil.d(TAG, " nickname-----> " + nickname);
+        LogUtil.d(TAG, "coverUrlMiddle -----> " + coverUrlMiddle);
+    }
+}
+```
+
+实现播放条上 播放、暂停 按钮
+
+```
+mPlayControl.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        if (mPlayerPresenter != null) {
+            if (mPlayerPresenter.isPlaying()) {
+                mPlayerPresenter.pause();
+            } else {
+                mPlayerPresenter.play();
+            }
+        }
+    }
+});
+```
