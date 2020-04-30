@@ -1,5 +1,6 @@
 package com.example.himalaya.presenters;
 
+import com.example.himalaya.api.XimalayApi;
 import com.example.himalaya.interfaces.IAlbumDetailPresenter;
 import com.example.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.example.himalaya.utils.Constants;
@@ -65,12 +66,8 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     }
 
     private void doLoaded(final boolean isLoaderMore) {
-        Map<String, String> map = new HashMap<>();
-        map.put(DTransferConstants.SORT, "asc");
-        map.put(DTransferConstants.ALBUM_ID, mCurrentAlbumId+"");
-        map.put(DTransferConstants.PAGE, mCurrentPageIndex + "");
-        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
-        CommonRequest.getTracks(map, new IDataCallBack<TrackList>() {
+        XimalayApi ximalayapi = XimalayApi.getXimalayapi();
+        ximalayapi.getAlbumDetail(new IDataCallBack<TrackList>() {
             @Override
             public void onSuccess(TrackList trackList) {
                 if (trackList != null) {
@@ -99,7 +96,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
                 LogUtil.d(TAG, "errorMsg -->  " + errorMsg);
                 handleError(errorCode, errorMsg);
             }
-        });
+        },mCurrentAlbumId,mCurrentPageIndex);
 
         }
 

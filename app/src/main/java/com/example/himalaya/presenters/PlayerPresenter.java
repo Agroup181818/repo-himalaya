@@ -57,6 +57,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
     //sp's key and name
     public static final String PLAY_MODE_SP_NAME = "PlayMod";
     public static final String PLAY_MODE_SP_KEY = "currentPlayMode";
+    private int mCurrentProgressPosition=0;
+    private int mPrograssDuration=0;
 
 
     private PlayerPresenter() {
@@ -234,13 +236,29 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void registerViewCallback(IPlayerCallback iPlayerCallback) {
+
+        //通知当前节目
         iPlayerCallback.onTrackUpdate(mCurrentTrack , mCurrentIndex);
+        //更新状态栏progress
+        iPlayerCallback.onProgressChange(mCurrentProgressPosition,mPrograssDuration);
+        //更新状态
+        handlerPlayState(iPlayerCallback);
         //从SP里拿
         int modeIndex = mPlayModSp.getInt(PLAY_MODE_SP_KEY, PLAY_MODEL_LIST_INT);
         mCurrentPlayMode = getModeByInt(modeIndex);
         iPlayerCallback.onPlayModeChange(mCurrentPlayMode);
         if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
             mIPlayerCallbacks.add(iPlayerCallback);
+        }
+    }
+
+    private void handlerPlayState(IPlayerCallback iPlayerCallback) {
+        int playerStatus = mPlayerManager.getPlayerStatus();
+        //根据状态调用接口的方法
+        if (PlayerConstants.STATE_STARTED == playerStatus) {
+            iPlayerCallback.onPlayStart();
+        } else {
+            iPlayerCallback.onPlayPause();
         }
     }
 
@@ -377,7 +395,8 @@ public class PlayerPresenter implements IPlayerPresenter, IXmAdsStatusListener, 
 
     @Override
     public void onPlayProgress(int currPos, int duration) {
-
+        this.mCurrentProgressPosition=currPos;
+        this.mPrograssDuration=duration;
         //单位是毫秒
         for (IPlayerCallback iPlayerCallback : mIPlayerCallbacks) {
             iPlayerCallback.onProgressChange(currPos, duration);

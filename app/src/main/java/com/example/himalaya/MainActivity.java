@@ -1,5 +1,6 @@
 package com.example.himalaya;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +50,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
     private RoundRectImageView mRoundRectImageView;
     private ImageView mPlayControl;
     private PlayerPresenter mPlayerPresenter;
+    private View mSearchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,13 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
                 }
             }
         });
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initView() {
@@ -123,6 +132,8 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         mHeaderTitle.setSelected(true);
         mSubTitle = this.findViewById(R.id.main_sub_title);
         mPlayControl = this.findViewById(R.id.main_play_control);
+        //搜索控件相关的
+        mSearchBtn = this.findViewById(R.id.search_btn);
 
         Map<String, String> map = new HashMap<>();
         CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {

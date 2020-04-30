@@ -14,9 +14,12 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P81
+已完成进度P85（你们倒是快快敲啊！！！QAQ）
 =======
 修改了一些布局，图标大小什么的，视觉效果更好，比例更好一点
+=======
+=======
+82集的重构代码做了，主界面播放控制没做82一半没做，83做了，84没做，85做了，之后正常敲就行了
 =======
 配置build.gradle 中阿里镜像
 
@@ -1585,4 +1588,151 @@ mPlayControl.setOnClickListener(new View.OnClickListener() {
         }
     }
 });
+```
+P82重构代码 14:00以后的功能没有做
+
+```
+package com.example.himalaya.api;
+
+import com.example.himalaya.utils.Constants;
+import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
+import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
+import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
+import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
+import com.ximalaya.ting.android.opensdk.model.track.TrackList;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class XimalayApi {
+    private XimalayApi() {
+    }
+
+    private static XimalayApi sXimalayApi;
+
+    public static XimalayApi getXimalayapi() {
+        if (sXimalayApi == null) {
+            synchronized (XimalayApi.class) {
+                if (sXimalayApi == null) {
+                    sXimalayApi = new XimalayApi();
+                }
+            }
+        }
+        return sXimalayApi;
+    }
+
+    /**
+     * 获取推荐的内容
+     *
+     * @param callBack 请求结果的回调接口
+     */
+    public void getRecommendList(IDataCallBack<GussLikeAlbumList> callBack) {
+        Map<String, String> map = new HashMap<>();
+        //这个参数表示一页数据多少条
+        map.put(DTransferConstants.LIKE_COUNT, Constants.COUNT_RECOMMEND + "");
+        CommonRequest.getGuessLikeAlbum(map, callBack);
+    }
+
+
+    /**
+     * 根据专辑的id获取到专辑的内容
+     *
+     * @param callback  获取到专辑的回调接口
+     * @param albumId   专辑的id
+     * @param pageIndex 第几页
+     */
+    public void getAlbumDetail(IDataCallBack<TrackList> callback, long albumId, int pageIndex) {
+        Map<String, String> map = new HashMap<>();
+        map.put(DTransferConstants.SORT, "asc");
+        map.put(DTransferConstants.ALBUM_ID, albumId + "");
+        map.put(DTransferConstants.PAGE, pageIndex + "");
+        map.put(DTransferConstants.PAGE_SIZE, Constants.COUNT_DEFAULT + "");
+        CommonRequest.getTracks(map, callback);
+    }
+
+}
+
+```
+
+
+P83修复播放页面    播放按键和进度条的bug
+```
+    private void handlerPlayState(IPlayerCallback iPlayerCallback) {
+        int playerStatus = mPlayerManager.getPlayerStatus();
+        //根据状态调用接口的方法
+        if (PlayerConstants.STATE_STARTED == playerStatus) {
+            iPlayerCallback.onPlayStart();
+        } else {
+            iPlayerCallback.onPlayPause();
+        }
+    }
+    
+   public void registerViewCallback(IPlayerCallback iPlayerCallback) {
+
+        //通知当前节目
+        iPlayerCallback.onTrackUpdate(mCurrentTrack , mCurrentIndex);
+        //更新状态栏progress
+        iPlayerCallback.onProgressChange(mCurrentProgressPosition,mPrograssDuration);
+        //更新状态
+        handlerPlayState(iPlayerCallback);
+        //从SP里拿
+        int modeIndex = mPlayModSp.getInt(PLAY_MODE_SP_KEY, PLAY_MODEL_LIST_INT);
+        mCurrentPlayMode = getModeByInt(modeIndex);
+        iPlayerCallback.onPlayModeChange(mCurrentPlayMode);
+        if (!mIPlayerCallbacks.contains(iPlayerCallback)) {
+            mIPlayerCallbacks.add(iPlayerCallback);
+        }
+    }
+```
+
+P85搜索框的布局
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/selector_back_btn" />
+
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_edit_text_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:text="搜索"
+            android:textColor="@color/second_color"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+</LinearLayout>
 ```

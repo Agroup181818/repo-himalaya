@@ -1,5 +1,6 @@
 package com.example.himalaya.presenters;
 
+import com.example.himalaya.api.XimalayApi;
 import com.example.himalaya.interfaces.IRecommendPresenter;
 import com.example.himalaya.interfaces.IRecommendViewCallback;
 import com.example.himalaya.utils.Constants;
@@ -49,10 +50,8 @@ public class RecommendPresenter implements IRecommendPresenter {
         //获取推荐内容
         //封装参数
         updateLoading();
-        Map<String, String> map = new HashMap<>();
-        //这个参数表示一页数据多少条
-        map.put(DTransferConstants.LIKE_COUNT, Constants.COUNT_RECOMMEND +"");
-        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
+        XimalayApi ximalayapi = XimalayApi.getXimalayapi();
+        ximalayapi.getRecommendList(new IDataCallBack<GussLikeAlbumList>() {
             @Override
             public void onSuccess(GussLikeAlbumList gussLikeAlbumList) {
                 LogUtil.d(TAG," thread name -- > " +Thread.currentThread().getName());
