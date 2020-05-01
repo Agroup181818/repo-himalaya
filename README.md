@@ -14,8 +14,9 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-已完成进度P85（你们倒是快快敲啊！！！QAQ）
+已完成进度P92（你们倒是快快敲啊！！！QAQ）热词搞好了，冲冲冲
 =======
+
 修改了一些布局，图标大小什么的，视觉效果更好，比例更好一点
 =======
 =======
@@ -1736,3 +1737,263 @@ P85搜索框的布局
     </FrameLayout>
 </LinearLayout>
 ```
+
+P86 修改搜索界面的UI
+
+```
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:src="@drawable/selector_back_btn" />
+
+
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:paddingLeft="10dp"
+        android:hint="请输入专辑关键字"
+        android:textCursorDrawable="@drawable/shape_edit_text_cursor"
+        android:singleLine="true"
+        android:paddingRight="10dp"
+        android:textSize="16sp"
+        android:layout_weight="1"
+        android:background="@drawable/shape_edit_text_bg" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:text="搜索"
+        android:textColor="@color/main_color"
+        android:textSize="18sp" />
+
+</LinearLayout>
+```
+
+P87 定义搜索接口
+
+ISearchPresenter:
+
+```
+/**
+ * 进行搜素
+ * @param keyword
+ */
+void doSearch(String keyword);
+
+/**
+ * 重新搜素
+ */
+void reSearch();
+
+/**
+ * 加载更多
+ */
+void loadMore();
+
+/**
+ * 获取热词
+ */
+void getHotWord();
+
+/**
+ * 获取推荐的关键字（相关的关键字）
+ * @param keyword
+ */
+void getRecommendWord(String keyword);
+```
+
+callback:
+
+```
+/**
+ * 搜索结果的回调方法
+ * @param result
+ */
+void onSearchResultLoaded(List<Album> result);
+
+/**
+ * 获取推荐热词的结果回调
+ * @param hotWords
+ */
+void onHotWordLoaded(List<HotWord> hotWords);
+
+/**
+ * 加载更多的结果返回
+ * @param result 结果
+ * @param isOkay true表示加载更多成功，false表示没有更多
+ */
+void onLoadMoreResult(List<Album> result,boolean isOkay);
+
+/**
+ * 联想关键字的结果回调方法
+ * @param keyWordList
+ */
+void onRecommendWordLoaded(List<QueryResult> keyWordList);
+```
+
+P88 实现搜索逻辑
+
+```
+/**
+ * 根据关键词进行搜素
+ * @param keyword
+ */
+public void searchByKeyWord(String keyword, int page, IDataCallBack<SearchAlbumList> callBack) {
+    Map<String, String> map = new HashMap<>();
+    map.put(DTransferConstants.SEARCH_KEY, keyword);
+    map.put(DTransferConstants.PAGE, page+"");
+    map.put(DTransferConstants.PAGE_SIZE,Constants.COUNT_DEFAULT+"");
+    CommonRequest.getSearchedAlbums(map, callBack);
+}
+```
+
+```
+@Override
+public void doSearch(String keyword) {
+    //用于得重新搜素
+    //当网络不好的时候，用户会点击重新搜素
+    this.mCurrentKeyWord = keyword;
+    mXimalayapi.searchByKeyWord(keyword, mCurrenPage, new IDataCallBack<SearchAlbumList>() {
+        @Override
+        public void onSuccess(SearchAlbumList searchAlbumList) {
+            List<Album> albums = searchAlbumList.getAlbums();
+            if (albums != null) {
+                LogUtil.d(TAG,"album size -- > " +albums.size());
+            }else {
+                LogUtil.d(TAG,"album si null..");
+            }
+        }
+
+        @Override
+        public void onError(int errorCode, String errorMsg) {
+            LogUtil.d(TAG,"errorCode -- > " +errorCode);
+            LogUtil.d(TAG,"errorMsg -- > " +errorMsg);
+        }
+    });
+}
+```
+
+P89 实现热词搜索逻辑
+
+```
+@Override
+public void getHotWord() {
+    mXimalayapi.getHotWords(new IDataCallBack<HotWordList>() {
+        @Override
+        public void onSuccess(HotWordList hotWordList) {
+            if (hotWordList != null) {
+                List<HotWord> hotWords = hotWordList.getHotWordList();
+                LogUtil.d(TAG,"hotWords size -- > "+ hotWords.size());
+            }
+        }
+
+        @Override
+        public void onError(int errorCode, String errorMsg) {
+            LogUtil.d(TAG,"getHotWord errorCode -- > " +errorCode);
+            LogUtil.d(TAG,"getHotWord errorMsg -- > " +errorMsg);
+        }
+    });
+}
+
+@Override
+public void getRecommendWord(final String keyword) {
+    mXimalayapi.getSuggestWord(keyword, new IDataCallBack<SuggestWords>() {
+        @Override
+        public void onSuccess(SuggestWords suggestWords) {
+            if (suggestWords != null) {
+                List<QueryResult> keyWordList = suggestWords.getKeyWordList();
+                LogUtil.d(TAG,"keyWordList size -- > "+keyWordList.size());
+            }
+        }
+
+        @Override
+        public void onError(int errorCode, String errorMsg) {
+            LogUtil.d(TAG,"getHotWord errorCode -- > " +errorCode);
+            LogUtil.d(TAG,"getHotWord errorMsg -- > " +errorMsg);
+        }
+    });
+}
+```
+
+P90 UI控件的初始化
+
+```
+private void initView(){
+    mBackBtn = this.findViewById(R.id.search_back);
+    mInputBox = this.findViewById(R.id.search_input);
+    mSearchBtn = this.findViewById(R.id.search_btn);
+    mResultContainer = this.findViewById(R.id.search_container);
+}
+```
+
+```
+private void initEvent() {
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //去调用搜索的逻辑
+            }
+        });
+        mInputBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+//                LogUtil.d(TAG,"content --> "+charSequence);
+//                LogUtil.d(TAG,"start --> "+start);
+//                LogUtil.d(TAG,"before --> "+before);
+//                LogUtil.d(TAG,"count --> "+count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+```
+
+P91 获取推荐的热词
+
+```
+@Override
+public void onHotWordLoaded(List<HotWord> hotWordList) {
+    LogUtil.d(TAG,"hotWordList -- > " + hotWordList.size());
+    List<String> hotWords= new ArrayList<>();
+    hotWords.clear();
+    for (HotWord hotWord : hotWordList) {
+
+        String searchWord = hotWord.getSearchword();
+        hotWords.add(searchWord);
+    }
+    //更新UI，
+    mFlowTextLayout.setTextContents(hotWords);
+}
+```
+
+P92 搜索热词点击效果
+
+导入各种文件 等等等等。。。
+

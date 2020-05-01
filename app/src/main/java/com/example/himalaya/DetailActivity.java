@@ -107,7 +107,6 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
             private void handleNoPlayList() {
                 mPlayerPresenter.setPlayList(mCurrentTracks,DEFAULT_PLAY_INDEX);
             }
-
             private void handlePlayControl() {
                 if (mPlayerPresenter.isPlaying()) {
                     //正在播放，那么就暂停
