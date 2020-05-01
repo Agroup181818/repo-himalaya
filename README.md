@@ -11,14 +11,12 @@ yu test
 
 1.git强制覆盖本地文件（与git远程仓库保持一致）：
 git fetch --all
+
 git reset --hard origin/master
+
 git pull
 
-已完成进度P92（你们倒是快快敲啊！！！QAQ）热词搞好了，冲冲冲
-=======
-
-修改了一些布局，图标大小什么的，视觉效果更好，比例更好一点
-=======
+已完成进度P97
 =======
 82集的重构代码做了，主界面播放控制没做82一半没做，83做了，84没做，85做了，之后正常敲就行了
 =======
@@ -1996,4 +1994,23 @@ public void onHotWordLoaded(List<HotWord> hotWordList) {
 P92 搜索热词点击效果
 
 导入各种文件 等等等等。。。
-
+P94隐藏键盘
+```
+//隐藏键盘
+        InputMethodManager imm= (InputMethodManager) this. getSystemService(Context. INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mInputBox.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+```
+P96发起搜索
+```
+//1.把热词放到输入框里
+                mInputBox.setText(text);
+                mInputBox.setSelection(text.length());
+                //2.发起搜索
+                if (mSearchPresenter != null) {
+                    mSearchPresenter.doSearch(text);
+                }
+                //改变UI状态
+                if (mUILoader != null) {
+                    mUILoader.updateStatus(UILoader.UIStatus.LOADING);
+                }
+```

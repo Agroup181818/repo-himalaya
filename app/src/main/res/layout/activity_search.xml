@@ -51,11 +51,13 @@
     <FrameLayout
         android:id="@+id/search_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp" />
+        android:layout_height="match_parent" />
 
-    <com.example.himalaya.views.FlowTextLayout
-        android:id="@+id/flow_text_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"></com.example.himalaya.views.FlowTextLayout>
+<!--    <com.example.himalaya.views.FlowTextLayout-->
+<!--        android:id="@+id/flow_text_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_margin="10dp">-->
+
+<!--    </com.example.himalaya.views.FlowTextLayout>-->
 </LinearLayout>

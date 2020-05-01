@@ -17,23 +17,23 @@ import com.ximalaya.ting.android.opensdk.model.album.Album;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHolder> {
+public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.InnerHolder> {
 
     private List<Album> mData = new ArrayList<>();
 
-    private static final String TAG = "RecommendListAdapter";
+    private static final String TAG = "AlbumListAdapter";
     private onRecommendItemClickListener mItemClickListerer = null;
 
     @NonNull
     @Override
-    public RecommendListAdapter.InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AlbumListAdapter.InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //找到View
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recommend,parent,false);
         return new InnerHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecommendListAdapter.InnerHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull AlbumListAdapter.InnerHolder holder, final int position) {
         //设置数据
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -95,8 +95,8 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
         }
     }
 
-    public void setOnRecommendItemClickLister(onRecommendItemClickListener lister){
-        this.mItemClickListerer = lister;
+    public void setOnRecommendItemClickLister(onRecommendItemClickListener listener){
+        this.mItemClickListerer = listener;
     }
 
     public interface onRecommendItemClickListener {

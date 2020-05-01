@@ -42,7 +42,7 @@ public class SearchPresenter implements ISearchPresenter {
         return sSearchPresenter;
     }
 
-    private List<ISearchCallback> mCallbacks = new ArrayList<>();
+    private List<ISearchCallback> mCallback = new ArrayList<>();
 
     @Override
     public void doSearch(String keyword) {
@@ -59,15 +59,22 @@ public class SearchPresenter implements ISearchPresenter {
                 List<Album> albums = searchAlbumList.getAlbums();
                 if (albums != null) {
                     LogUtil.d(TAG,"album size -- > " +albums.size());
+                    for (ISearchCallback iSearchCallback : mCallback) {
+                        iSearchCallback.onSearchResultLoaded(albums);
+                    }
                 }else {
                     LogUtil.d(TAG,"album si null..");
                 }
+
             }
 
             @Override
             public void onError(int errorCode, String errorMsg) {
                 LogUtil.d(TAG,"errorCode -- > " +errorCode);
                 LogUtil.d(TAG,"errorMsg -- > " +errorMsg);
+                for(ISearchCallback iSearchCallback: mCallback){
+                    iSearchCallback. onError(errorCode, errorMsg);
+                }
             }
         });
     }
@@ -84,14 +91,15 @@ public class SearchPresenter implements ISearchPresenter {
 
     @Override
     public void getHotWord() {
+
         mXimalayapi.getHotWords(new IDataCallBack<HotWordList>() {
             @Override
             public void onSuccess(HotWordList hotWordList) {
                 if (hotWordList != null) {
                     List<HotWord> hotWords = hotWordList.getHotWordList();
                     LogUtil.d(TAG,"hotWords size -- > "+ hotWords.size());
-                    for (ISearchCallback iSearchCallback : mCallbacks) {
-                        iSearchCallback.onHotWordLoaded(hotWords);
+                    for(ISearchCallback iSearchCallback: mCallback){
+                        iSearchCallback. onHotWordLoaded(hotWords);
                     }
                 }
             }
@@ -100,6 +108,7 @@ public class SearchPresenter implements ISearchPresenter {
             public void onError(int errorCode, String errorMsg) {
                 LogUtil.d(TAG,"getHotWord errorCode -- > " +errorCode);
                 LogUtil.d(TAG,"getHotWord errorMsg -- > " +errorMsg);
+
             }
         });
     }
@@ -119,19 +128,22 @@ public class SearchPresenter implements ISearchPresenter {
             public void onError(int errorCode, String errorMsg) {
                 LogUtil.d(TAG,"getHotWord errorCode -- > " +errorCode);
                 LogUtil.d(TAG,"getHotWord errorMsg -- > " +errorMsg);
+                for(ISearchCallback iSearchCallback: mCallback){
+                    iSearchCallback. onError(errorCode, errorMsg);
+                }
             }
         });
     }
 
     @Override
     public void registerViewCallback(ISearchCallback iSearchCallback) {
-        if (!mCallbacks.contains(iSearchCallback)) {
-            mCallbacks.add(iSearchCallback);
+        if (!mCallback.contains(iSearchCallback)) {
+            mCallback.add(iSearchCallback);
         }
     }
 
     @Override
     public void unRegisterViewCallback(ISearchCallback iSearchCallback) {
-        mCallbacks.remove(iSearchCallback);
+        mCallback.remove(iSearchCallback);
     }
 }

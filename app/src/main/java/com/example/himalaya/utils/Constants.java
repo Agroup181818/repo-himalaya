@@ -10,7 +10,7 @@ public class Constants {
     public static int COUNT_DEFAULT = 50;
 
     //热词的数量
-    public static int COUNT_HOT_WORD = 20;
+    public static int COUNT_HOT_WORD = 14;
 
 
 }

@@ -1,23 +1,36 @@
 package com.example.himalaya;
 
+import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.himalaya.adapters.AlbumListAdapter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.interfaces.ISearchCallback;
 import com.example.himalaya.presenters.SearchPresenter;
 import com.example.himalaya.utils.LogUtil;
 import com.example.himalaya.views.FlowTextLayout;
+import com.example.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 import com.ximalaya.ting.android.opensdk.model.word.HotWord;
 import com.ximalaya.ting.android.opensdk.model.word.QueryResult;
+
+import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +44,12 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private View mSearchBtn;
     private FrameLayout mResultContainer;
     private SearchPresenter mSearchPresenter;
+    private UILoader mUILoader;
+    private RecyclerView mResultListView;
+    private AlbumListAdapter mAlbumListAdapter;
     private FlowTextLayout mFlowTextLayout;
+    private InputMethodManager mImm;
+    //private FlowTextLayout mFlowTextLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +61,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     }
 
     private void initPresenter() {
-
+        mImm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         mSearchPresenter = SearchPresenter.getSearchPresenter();
         //注册UI更新的接口
         mSearchPresenter.registerViewCallback(this);
@@ -64,6 +82,31 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     }
 
     private void initEvent() {
+        mFlowTextLayout.setClickListener(new FlowTextLayout.ItemClickListener() {
+            @Override
+            public void onItemClick(String text) {
+                //1.把热词放到输入框里
+                mInputBox.setText(text);
+                mInputBox.setSelection(text.length());
+                //2.发起搜索
+                if (mSearchPresenter != null) {
+                    mSearchPresenter.doSearch(text);
+                }
+                //改变UI状态
+                if (mUILoader != null) {
+                    mUILoader.updateStatus(UILoader.UIStatus.LOADING);
+                }
+            }
+        });
+        mUILoader.setOnRetrayListener(new UILoader.OnRetrayClickListener() {
+            @Override
+            public void onRetryClick() {
+                if (mSearchPresenter != null) {
+                    mSearchPresenter.reSearch();
+                    mUILoader.updateStatus(UILoader.UIStatus.LOADING);
+                }
+            }
+        });
         mBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,52 +117,128 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
             @Override
             public void onClick(View view) {
                 //去调用搜索的逻辑
+                String keyword = mInputBox.getText().toString().trim();
+                if (mSearchPresenter != null) {
+                    mSearchPresenter.doSearch(keyword);
+                    mUILoader.updateStatus(UILoader.UIStatus.LOADING);
+                }
             }
         });
         mInputBox.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-//                LogUtil.d(TAG,"content --> "+charSequence);
-//                LogUtil.d(TAG,"start --> "+start);
-//                LogUtil.d(TAG,"before --> "+before);
-//                LogUtil.d(TAG,"count --> "+count);
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (TextUtils. isEmpty(s)){
+                mSearchPresenter. getHotWord();
+            }
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable s) {
 
             }
         });
-        mFlowTextLayout.setClickListener(new FlowTextLayout.ItemClickListener() {
-            @Override
-            public void onItemClick(String text) {
-                Toast.makeText(SearchActivity.this,text,Toast.LENGTH_SHORT).show();
-            }
-        });
+
     }
 
-    private void initView(){
+    private void initView() {
         mBackBtn = this.findViewById(R.id.search_back);
         mInputBox = this.findViewById(R.id.search_input);
+        mInputBox.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mInputBox.requestFocus();
+                mImm.showSoftInput(mInputBox, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }, 1000);
         mSearchBtn = this.findViewById(R.id.search_btn);
         mResultContainer = this.findViewById(R.id.search_container);
-        mFlowTextLayout = this.findViewById(R.id.flow_text_layout);
+        //mFlowTextLayout = this.findViewById(R.id.recommend_hot_word_view);
+        if (mUILoader == null) {
+            mUILoader = new UILoader(this) {
+                @Override
+                protected View getSuccessView(ViewGroup container) {
+                    return createSuccessView();
+                }
+            };
+            if (mUILoader.getParent() instanceof ViewGroup) {
+                ((ViewGroup) mUILoader.getParent()).removeView(mUILoader);
+            }
+            mResultContainer.addView(mUILoader);
+
+        }
+
+    }
+
+
+    /**
+     * 创建数据请求成功的View
+     *
+     * @return
+     */
+    private View createSuccessView() {
+        View resultView = LayoutInflater.from(this).inflate(R.layout.search_result_layout, null);
+
+        //显示热词的
+        mFlowTextLayout = resultView.findViewById(R.id.recommend_hot_word_view);
+
+
+        mResultListView = resultView.findViewById(R.id.result_list_view);
+        //设置布局管理器
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mResultListView.setLayoutManager(layoutManager);
+        //设置适配器
+        mAlbumListAdapter = new AlbumListAdapter();
+        mResultListView.setAdapter(mAlbumListAdapter);
+        mResultListView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                //dip2px dp转像素
+                outRect.top = UIUtil.dip2px(view.getContext(), 5);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), 5);
+                outRect.left = UIUtil.dip2px(view.getContext(), 5);
+                outRect.right = UIUtil.dip2px(view.getContext(), 5);
+
+            }
+        });
+        return resultView;
     }
 
     @Override
     public void onSearchResultLoaded(List<Album> result) {
+        mFlowTextLayout.setVisibility(View.GONE);
+        mResultListView.setVisibility(View.VISIBLE);
 
+        //隐藏键盘
+
+        mImm.hideSoftInputFromWindow(mInputBox.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        if (result != null) {
+            if (result.size() == 0) {
+                //数据为空
+                if (mUILoader != null) {
+                    mUILoader.updateStatus(UILoader.UIStatus.EMPTY);
+                }
+            } else {
+                //如果数据不为空，设置数据
+                mAlbumListAdapter.setData(result);
+                mUILoader.updateStatus(UILoader.UIStatus.SUCCESS);
+            }
+        }
     }
 
     @Override
     public void onHotWordLoaded(List<HotWord> hotWordList) {
-        LogUtil.d(TAG,"hotWordList -- > " + hotWordList.size());
-        List<String> hotWords= new ArrayList<>();
+        mResultListView.setVisibility(View.GONE);
+        mFlowTextLayout.setVisibility(View.VISIBLE);
+        if (mUILoader != null) {
+            mUILoader.updateStatus(UILoader.UIStatus.SUCCESS);
+        }
+        LogUtil.d(TAG, "hotWordList -- > " + hotWordList.size());
+        List<String> hotWords = new ArrayList<>();
         hotWords.clear();
         for (HotWord hotWord : hotWordList) {
 
@@ -127,7 +246,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
             hotWords.add(searchWord);
         }
         Collections.sort(hotWords);
-        //更新UI，
+        //更新UI
         mFlowTextLayout.setTextContents(hotWords);
     }
 
@@ -139,5 +258,13 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     @Override
     public void onRecommendWordLoaded(List<QueryResult> keyWordList) {
 
+    }
+
+    @Override
+    public void onError(int errorCode, String errorMsg) {
+        if (mUILoader != null) {
+            mUILoader.updateStatus(UILoader.UIStatus.NETWORK_ERROE);
+
+        }
     }
 }

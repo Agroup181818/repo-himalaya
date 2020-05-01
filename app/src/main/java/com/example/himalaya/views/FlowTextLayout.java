@@ -38,7 +38,6 @@ public class FlowTextLayout extends ViewGroup {
 
 
     public void setTextContents(List<String> texts) {
-        this.removeAllViews();
         for (final String text : texts) {
             TextView item = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_text, this, false);
             item.setText(text);
