@@ -21,7 +21,4 @@ public interface IRecommendPresenter extends IBasePresenter<IRecommendViewCallba
     void loadMore();
 
 
-
-
-
 }

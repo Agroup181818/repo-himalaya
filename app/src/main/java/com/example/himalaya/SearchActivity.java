@@ -1,6 +1,7 @@
 package com.example.himalaya;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.himalaya.adapters.AlbumListAdapter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.interfaces.ISearchCallback;
+import com.example.himalaya.presenters.AlbumDetailPresenter;
 import com.example.himalaya.presenters.SearchPresenter;
 import com.example.himalaya.utils.LogUtil;
 import com.example.himalaya.views.FlowTextLayout;
@@ -36,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SearchActivity extends BaseActivity implements ISearchCallback {
+public class SearchActivity extends BaseActivity implements ISearchCallback, AlbumListAdapter.onRecommendItemClickListener {
 
     private static final String TAG = "SearchActivity";
     private View mBackBtn;
@@ -49,6 +51,8 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     private AlbumListAdapter mAlbumListAdapter;
     private FlowTextLayout mFlowTextLayout;
     private InputMethodManager mImm;
+    private View mDelBtn;
+    public static final int TIME_SHOW_IMM = 1000;
     //private FlowTextLayout mFlowTextLayout;
 
     @Override
@@ -82,20 +86,20 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
     }
 
     private void initEvent() {
+
+        mAlbumListAdapter.setOnRecommendItemClickLister(this);
+
+
+        mDelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mInputBox.setText("");
+            }
+        });
         mFlowTextLayout.setClickListener(new FlowTextLayout.ItemClickListener() {
             @Override
             public void onItemClick(String text) {
-                //1.把热词放到输入框里
-                mInputBox.setText(text);
-                mInputBox.setSelection(text.length());
-                //2.发起搜索
-                if (mSearchPresenter != null) {
-                    mSearchPresenter.doSearch(text);
-                }
-                //改变UI状态
-                if (mUILoader != null) {
-                    mUILoader.updateStatus(UILoader.UIStatus.LOADING);
-                }
+                switch2Search(text);
             }
         });
         mUILoader.setOnRetrayListener(new UILoader.OnRetrayClickListener() {
@@ -118,6 +122,13 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
             public void onClick(View view) {
                 //去调用搜索的逻辑
                 String keyword = mInputBox.getText().toString().trim();
+
+                if (TextUtils.isEmpty(keyword)) {
+                    //提示
+                    Toast.makeText(SearchActivity.this,"搜索关键词不能为空",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (mSearchPresenter != null) {
                     mSearchPresenter.doSearch(keyword);
                     mUILoader.updateStatus(UILoader.UIStatus.LOADING);
@@ -132,9 +143,14 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (TextUtils. isEmpty(s)){
-                mSearchPresenter. getHotWord();
-            }
+                if (TextUtils.isEmpty(s)) {
+                    mSearchPresenter.getHotWord();
+                    mDelBtn.setVisibility(View.GONE);
+
+                } else {
+                    mDelBtn.setVisibility(View.VISIBLE);
+
+                }
             }
 
             @Override
@@ -145,16 +161,37 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
 
     }
 
+    private void switch2Search(String text) {
+        if (TextUtils.isEmpty(text)) {
+            //提示
+            Toast.makeText(this,"搜索关键词不能为空",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //1.把热词放到输入框里
+        mInputBox.setText(text);
+        mInputBox.setSelection(text.length());
+        //2.发起搜索
+        if (mSearchPresenter != null) {
+            mSearchPresenter.doSearch(text);
+        }
+        //改变UI状态
+        if (mUILoader != null) {
+            mUILoader.updateStatus(UILoader.UIStatus.LOADING);
+        }
+    }
+
     private void initView() {
         mBackBtn = this.findViewById(R.id.search_back);
         mInputBox = this.findViewById(R.id.search_input);
+        mDelBtn = this.findViewById(R.id.search_input_delete);
+        mDelBtn.setVisibility(View.GONE);
         mInputBox.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mInputBox.requestFocus();
                 mImm.showSoftInput(mInputBox, InputMethodManager.SHOW_IMPLICIT);
             }
-        }, 1000);
+        }, TIME_SHOW_IMM);
         mSearchBtn = this.findViewById(R.id.search_btn);
         mResultContainer = this.findViewById(R.id.search_container);
         //mFlowTextLayout = this.findViewById(R.id.recommend_hot_word_view);
@@ -181,8 +218,9 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
      * @return
      */
     private View createSuccessView() {
-        View resultView = LayoutInflater.from(this).inflate(R.layout.search_result_layout, null);
 
+        View resultView = LayoutInflater.from(this).inflate(R.layout.search_result_layout, null);
+        //刷新控件
         //显示热词的
         mFlowTextLayout = resultView.findViewById(R.id.recommend_hot_word_view);
 
@@ -266,5 +304,13 @@ public class SearchActivity extends BaseActivity implements ISearchCallback {
             mUILoader.updateStatus(UILoader.UIStatus.NETWORK_ERROE);
 
         }
+    }
+
+    @Override
+    public void onItemClick(int position, Album album) {
+        AlbumDetailPresenter.getInstance().setTargetAlbum(album);
+        //Item被点击了,跳转到详情界面
+        Intent intent = new Intent(this, DetailActivity.class);
+        startActivity(intent);
     }
 }

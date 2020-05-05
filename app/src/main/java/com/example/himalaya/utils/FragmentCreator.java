@@ -1,9 +1,6 @@
 package com.example.himalaya.utils;
 
-import androidx.fragment.app.Fragment;
-
 import com.example.himalaya.base.BaseFragment;
-import com.example.himalaya.fragments.HistoryFragment;
 import com.example.himalaya.fragments.RecommendFragment;
 import com.example.himalaya.fragments.SubscriptionFragment;
 
@@ -13,15 +10,14 @@ import java.util.Map;
 public class FragmentCreator {
 
 
-    public final static int INDEX_RECOMMEND =0;
-    public final static int INDEX_SUBSCRIPTION=1;
-    public final static int INDEX_HISTORY=2;
+    public final static int INDEX_RECOMMEND = 0;
+    public final static int INDEX_SUBSCRIPTION = 1;
 
-    public final static int PAGE_COUNT=3;
+    public final static int PAGE_COUNT = 2;
 
-    private  static Map<Integer, BaseFragment> sCache=new HashMap<>();
+    private static Map<Integer, BaseFragment> sCache = new HashMap<>();
 
-    public  static BaseFragment getFragment(int index){
+    public static BaseFragment getFragment(int index) {
         BaseFragment baseFragment = sCache.get(index);
         if (baseFragment != null) {
             return baseFragment;
@@ -29,14 +25,12 @@ public class FragmentCreator {
         }
         switch (index) {
             case INDEX_RECOMMEND:
-                baseFragment=new RecommendFragment();
+                baseFragment = new RecommendFragment();
                 break;
             case INDEX_SUBSCRIPTION:
-                baseFragment=new SubscriptionFragment();
+                baseFragment = new SubscriptionFragment();
                 break;
-            case INDEX_HISTORY:
-                baseFragment =new HistoryFragment();
-                break;
+
         }
 
         sCache.put(index, baseFragment);

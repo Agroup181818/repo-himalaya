@@ -1,7 +1,9 @@
 package com.example.himalaya.adapters;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,7 +30,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
     @Override
     public AlbumListAdapter.InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //找到View
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recommend,parent,false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recommend, parent, false);
         return new InnerHolder(itemView);
     }
 
@@ -39,11 +41,11 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mItemClickListerer !=null){
+                if (mItemClickListerer != null) {
                     int clickPosition = (int) view.getTag();
-                    mItemClickListerer.onItemClick(clickPosition,mData.get(clickPosition));
+                    mItemClickListerer.onItemClick(clickPosition, mData.get(clickPosition));
                 }
-                Log.d(TAG,"holder.itemView clicke -- > "+view.getTag());
+                Log.d(TAG, "holder.itemView clicke -- > " + view.getTag());
             }
         });
         holder.setData(mData.get(position));
@@ -52,7 +54,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
     @Override
     public int getItemCount() {
         //返回要显示的个数
-        if(mData!=null){
+        if (mData != null) {
             return mData.size();
         }
         return 0;
@@ -60,7 +62,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
 
     public void setData(List<Album> albumList) {
 
-        if(mData!=null){
+        if (mData != null) {
             mData.clear();
             mData.addAll(albumList);
         }
@@ -68,7 +70,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
         notifyDataSetChanged();
     }
 
-    public class InnerHolder extends RecyclerView.ViewHolder{
+    public class InnerHolder extends RecyclerView.ViewHolder {
         public InnerHolder(@NonNull View itemView) {
             super(itemView);
         }
@@ -88,14 +90,20 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.Inne
 
             albumTitleTv.setText(album.getAlbumTitle());
             albumDescrTv.setText(album.getAlbumIntro());
-            albumPlayCountTv.setText(album.getPlayCount()+"");
-            albumContentCountTv.setText(album.getIncludeTrackCount()+"");
+            albumPlayCountTv.setText(album.getPlayCount() + "");
+            albumContentCountTv.setText(album.getIncludeTrackCount() + "");
 
-            Picasso.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
+
+            String coverUrlLarge = album.getCoverUrlLarge();
+            if (!TextUtils.isEmpty(coverUrlLarge)) {
+                Picasso.with(itemView.getContext()).load(coverUrlLarge).into(albumCoverIv);
+            } else {
+                albumCoverIv.setImageResource(R.mipmap.ximalay_logo);
+            }
         }
     }
 
-    public void setOnRecommendItemClickLister(onRecommendItemClickListener listener){
+    public void setOnRecommendItemClickLister(onRecommendItemClickListener listener) {
         this.mItemClickListerer = listener;
     }
 

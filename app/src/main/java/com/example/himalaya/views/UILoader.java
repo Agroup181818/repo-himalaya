@@ -21,19 +21,20 @@ public abstract class UILoader extends FrameLayout {
     private OnRetrayClickListener mOnRetrayClickListener = null;
 
     public enum UIStatus {
-        LOADING,SUCCESS,NETWORK_ERROE,EMPTY,NONE
+        LOADING, SUCCESS, NETWORK_ERROE, EMPTY, NONE
     }
+
     public UIStatus mCurrentStatus = UIStatus.NONE;
 
     public UILoader(@Nullable Context context) {
-        this(context , null);
+        this(context, null);
     }
 
-    public UILoader(@Nullable Context context,@Nullable AttributeSet attrs) {
-        this(context, attrs ,0);
+    public UILoader(@Nullable Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public UILoader(@Nullable Context context,@Nullable AttributeSet attrs, int defStyleAttr) {
+    public UILoader(@Nullable Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -95,11 +96,13 @@ public abstract class UILoader extends FrameLayout {
     protected abstract View getSuccessView(ViewGroup container);
 
     protected View getEmptyView() {
-        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_empty_view , this ,false);
-    };
+        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_empty_view, this, false);
+    }
+
+    ;
 
     protected View getNetWorkErrorView() {
-        View networkErrorView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_error_view , this ,false);
+        View networkErrorView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_error_view, this, false);
         networkErrorView.findViewById(R.id.network_error_icon).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,10 +113,12 @@ public abstract class UILoader extends FrameLayout {
             }
         });
         return networkErrorView;
-    };
+    }
+
+    ;
 
     private View getLoadingView() {
-        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_loading_view , this ,false);
+        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_loading_view, this, false);
     }
 
     public void setOnRetrayListener(OnRetrayClickListener listener) {

@@ -139,7 +139,10 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
             @Override
             public void onSuccess(@Nullable CategoryList categoryList) {
-                List<Category> categories = categoryList.getCategories();
+                List<Category> categories = null;
+                if (categoryList != null) {
+                    categories = categoryList.getCategories();
+                }
                 if (categories != null) {
                     int size = categories.size();
                     Log.d(TAG, "categories size ---- >" + size);

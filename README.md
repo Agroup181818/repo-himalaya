@@ -16,9 +16,12 @@ git reset --hard origin/master
 
 git pull
 
-已完成进度P97
+已完成进度P107 要从107开始做                         我们做订阅，历史不做了。已经修改完成（由4个页面改为3个页面）
 =======
-82集的重构代码做了，主界面播放控制没做82一半没做，83做了，84没做，85做了，之后正常敲就行了
+P118BUG解决了
+82集的重构代码做了，主界面播放控制没做82一半没做，83做了，84没做，85做了，之后正常敲就行了 联想词没有做
+没有做的×p99,100,101,102,103,105
+
 =======
 配置build.gradle 中阿里镜像
 
@@ -2012,5 +2015,22 @@ P96发起搜索
                 //改变UI状态
                 if (mUILoader != null) {
                     mUILoader.updateStatus(UILoader.UIStatus.LOADING);
+                }
+```
+P104 搜索结果进入详情页面
+```
+public void onItemClick(int position, Album album) {
+        AlbumDetailPresenter.getInstance().setTargetAlbum(album);
+        //Item被点击了,跳转到详情界面
+        Intent intent = new Intent(this, DetailActivity.class);
+        startActivity(intent);
+    }
+```
+P106解决搜索关键词为空的问题
+```
+if (TextUtils.isEmpty(keyword)) {
+                    //提示
+                    Toast.makeText(SearchActivity.this,"搜索关键词不能为空",Toast.LENGTH_SHORT).show();
+                    return;
                 }
 ```

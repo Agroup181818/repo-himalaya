@@ -6,6 +6,7 @@ public interface ISearchPresenter extends IBasePresenter<ISearchCallback> {
 
     /**
      * 进行搜素
+     *
      * @param keyword
      */
     void doSearch(String keyword);
@@ -27,6 +28,7 @@ public interface ISearchPresenter extends IBasePresenter<ISearchCallback> {
 
     /**
      * 获取推荐的关键字（相关的关键字）
+     *
      * @param keyword
      */
     void getRecommendWord(String keyword);

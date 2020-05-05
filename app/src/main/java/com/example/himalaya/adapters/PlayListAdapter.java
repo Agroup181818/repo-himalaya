@@ -21,14 +21,14 @@ import java.util.List;
 public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.InnerHolder> {
 
 
-    private int playingIndex=0;
+    private int playingIndex = 0;
     private List<Track> mData = new ArrayList<>();
-    private SobPopWindow.PlayListItemClickListener mItemClickOnListener=null;
+    private SobPopWindow.PlayListItemClickListener mItemClickOnListener = null;
 
     @NonNull
     @Override
     public InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView=LayoutInflater.from(parent.getContext()).inflate(R.layout.item_play_list, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_play_list, parent, false);
 
         return new InnerHolder(itemView);
     }
@@ -51,13 +51,13 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.InnerH
         TextView trackTitleTv = holder.itemView.findViewById(R.id.track_title_tv);
 
         //设置字体颜色
-        trackTitleTv.setTextColor(BaseApplication.getAppContext().getResources().getColor(playingIndex==position? R.color.second_color:R.color.play_list_text_color));
+        trackTitleTv.setTextColor(BaseApplication.getAppContext().getResources().getColor(playingIndex == position ? R.color.second_color : R.color.play_list_text_color));
 
 
         trackTitleTv.setText(track.getTrackTitle());
         //找播放状态的图标
         View playingIconView = holder.itemView.findViewById(R.id.play_icon_iv);
-        playingIconView.setVisibility(playingIndex==position?View.VISIBLE:View.GONE);
+        playingIconView.setVisibility(playingIndex == position ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -73,12 +73,12 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.InnerH
     }
 
     public void setCurrentPlayPosition(int position) {
-     playingIndex=position;
-     notifyDataSetChanged();
+        playingIndex = position;
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(SobPopWindow.PlayListItemClickListener listener) {
-        this.mItemClickOnListener=listener;
+        this.mItemClickOnListener = listener;
     }
 
 

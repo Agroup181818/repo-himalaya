@@ -66,7 +66,7 @@ public class IndicatorAdapter extends CommonNavigatorAdapter {
         return indicator;
     }
 
-    public void setOnIndicatorTapClickListener(OnIndicatorTapClickListener listener){
+    public void setOnIndicatorTapClickListener(OnIndicatorTapClickListener listener) {
         this.mOnTapClickListener = listener;
     }
 

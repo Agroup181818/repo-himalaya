@@ -31,7 +31,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
     //当前的专辑id
     private int mCurrentAlbumId = -1;
     //当前页
-    private int mCurrentPageIndex=0;
+    private int mCurrentPageIndex = 0;
 
     private AlbumDetailPresenter() {
 
@@ -76,13 +76,12 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
                     if (isLoaderMore) {
                         //上拉加载，结果放到后面去
-                    mTracks.addAll(tracks);
+                        mTracks.addAll(tracks);
                         int size = tracks.size();
                         handlerLoaderMoreResult(size);
-                    }
-                    else {
+                    } else {
                         //这个是下载加载，结果放到前面去
-                        mTracks.addAll(0,tracks);
+                        mTracks.addAll(0, tracks);
                     }
                     handlerAlbumDetailResult(mTracks);
                 }
@@ -96,9 +95,9 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
                 LogUtil.d(TAG, "errorMsg -->  " + errorMsg);
                 handleError(errorCode, errorMsg);
             }
-        },mCurrentAlbumId,mCurrentPageIndex);
+        }, mCurrentAlbumId, mCurrentPageIndex);
 
-        }
+    }
 
     private void handlerLoaderMoreResult(int size) {
         for (IAlbumDetailViewCallback callback : mCallbacks) {
@@ -113,18 +112,18 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
         mTracks.clear();
 
 
-        this.mCurrentAlbumId=albumId;
-        this.mCurrentPageIndex=page;
+        this.mCurrentAlbumId = albumId;
+        this.mCurrentPageIndex = page;
 
         //根据页码和专辑id获取列表
         doLoaded(false);
-
 
 
     }
 
     /**
      * 如果发生错误就通知UI
+     *
      * @param errorCode
      * @param errorMsg
      */

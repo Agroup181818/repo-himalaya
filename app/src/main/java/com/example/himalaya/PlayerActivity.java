@@ -59,25 +59,25 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     private ImageView mPlayModeSwitchBtn;
     private XmPlayListControl.PlayMode mCurrentMode = PLAY_MODEL_LIST;
 
-    private static Map<XmPlayListControl.PlayMode,XmPlayListControl.PlayMode> sPlayModeRule = new HashMap<>();
+    private static Map<XmPlayListControl.PlayMode, XmPlayListControl.PlayMode> sPlayModeRule = new HashMap<>();
 
     //处理模仿模式的切换
     //1.默认的是PLAY_MODEL_LIST
     //2.循环播放：PLAY_MODEL_LIST_LOOP
     //3.随机播放：PLAY_MODEL_RANDOM
     //4.单曲循环：PLAY_MODEL_SINGLE_LOOP
-    static{
-        sPlayModeRule.put(PLAY_MODEL_LIST,PLAY_MODEL_LIST_LOOP);
-        sPlayModeRule.put(PLAY_MODEL_LIST_LOOP,PLAY_MODEL_RANDOM);
-        sPlayModeRule.put(PLAY_MODEL_RANDOM,PLAY_MODEL_SINGLE_LOOP);
-        sPlayModeRule.put(PLAY_MODEL_SINGLE_LOOP,PLAY_MODEL_LIST);
+    static {
+        sPlayModeRule.put(PLAY_MODEL_LIST, PLAY_MODEL_LIST_LOOP);
+        sPlayModeRule.put(PLAY_MODEL_LIST_LOOP, PLAY_MODEL_RANDOM);
+        sPlayModeRule.put(PLAY_MODEL_RANDOM, PLAY_MODEL_SINGLE_LOOP);
+        sPlayModeRule.put(PLAY_MODEL_SINGLE_LOOP, PLAY_MODEL_LIST);
     }
 
     private View mPlayListBtn;
     private SobPopWindow mSobPopWindow;
     private ValueAnimator mEnterBgAnimator;
     private ValueAnimator mOutBgAnimator;
-    public final int BG_ANIMATION_DURATION=800;
+    public final int BG_ANIMATION_DURATION = 800;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,10 +87,6 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 //        //TODO:测试一下播放
         mPlayerPresenter = PlayerPresenter.getPlayerPresenter();
         mPlayerPresenter.registerViewCallback(this);
-
-
-        //在界面初始化之后，采取获取数据
-        mPlayerPresenter.getPlayList();
 
         initEven();
         initBgAnimation();
@@ -102,19 +98,19 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         mEnterBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float value  = (float) animation.getAnimatedValue();
+                float value = (float) animation.getAnimatedValue();
                 //处理一下背景，一点透明度
                 updateBgAlpha(value);
 
             }
         });
         //退出的
-        mOutBgAnimator = ValueAnimator.ofFloat(0.7f,1.0f);
+        mOutBgAnimator = ValueAnimator.ofFloat(0.7f, 1.0f);
         mOutBgAnimator.setDuration(BG_ANIMATION_DURATION);
         mOutBgAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float value  = (float) animation.getAnimatedValue();
+                float value = (float) animation.getAnimatedValue();
                 updateBgAlpha(value);
 
             }
@@ -131,7 +127,6 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
         }
     }
-
 
 
     /**
@@ -201,10 +196,10 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int action = motionEvent.getAction();
                 switch (action) {
-                    case MotionEvent.ACTION_DOWN :
+                    case MotionEvent.ACTION_DOWN:
                         mIsUserSlidePager = true;
                         break;
-                    case MotionEvent.ACTION_UP :
+                    case MotionEvent.ACTION_UP:
                         break;
 
                 }
@@ -223,7 +218,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             @Override
             public void onClick(View view) {
                 //TODO:展示播放列表
-                mSobPopWindow.showAtLocation(view, Gravity.BOTTOM,0,0);
+                mSobPopWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
 
                 //修改背景的透明度，有一个渐变的过程
                 mEnterBgAnimator.start();
@@ -279,13 +274,12 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     }
 
 
-    public void updateBgAlpha(float alpha){
+    public void updateBgAlpha(float alpha) {
         Window window = getWindow();
-        WindowManager.LayoutParams attributes=window.getAttributes();
+        WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.alpha = alpha;
         window.setAttributes(attributes);
     }
-
 
 
     /**
@@ -297,7 +291,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
      */
     private void updatePlayModeBtnImg() {
         int resId = R.drawable.selector_paly_mode_list_revers;
-        switch (mCurrentMode){
+        switch (mCurrentMode) {
             case PLAY_MODEL_LIST:
                 resId = R.drawable.selector_paly_mode_list_revers;
                 break;
@@ -327,7 +321,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         mPlayPreBtn = this.findViewById(R.id.play_pre);
         mTrackTitleTv = this.findViewById(R.id.track_title);
         if (!TextUtils.isEmpty(mTrackTitleText)) {
-        mTrackTitleTv.setText(mTrackTitleText);
+            mTrackTitleTv.setText(mTrackTitleText);
         }
         mTrackPagerView = this.findViewById(R.id.track_pager_view);
         //创建适配器
@@ -384,11 +378,11 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         //LogUtil.d(TAG, "list -->"+list);
         //把数据设置到适配器里去
         if (mTrackPagerAdapter != null) {
-        mTrackPagerAdapter.setData(list);
+            mTrackPagerAdapter.setData(list);
         }
         //数据回来以后，也要给播放列表一份
         if (mSobPopWindow != null) {
-        mSobPopWindow.setListData(list);
+            mSobPopWindow.setListData(list);
 
         }
     }
@@ -396,7 +390,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     @Override
     public void onPlayModeChange(XmPlayListControl.PlayMode playMode) {
         //更新播放模式并且修改UI
-        mCurrentMode =playMode;
+        mCurrentMode = playMode;
         //更新pop里的播放模式
         mSobPopWindow.updatePlayMode(mCurrentMode);
         updatePlayModeBtnImg();
@@ -444,8 +438,8 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     }
 
     @Override
-    public void onTrackUpdate (Track track,int playindex){
-        this.mTrackTitleText=track.getTrackTitle();
+    public void onTrackUpdate(Track track, int playindex) {
+        this.mTrackTitleText = track.getTrackTitle();
 
         if (mTrackTitleTv != null) {
             //设置当前节目的标题
@@ -454,7 +448,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         //当节目改变的时候，获取到当前播放中播放位置
         //当前节目改变以后、修改页面图片
         if (mTrackPagerView != null) {
-            mTrackPagerView.setCurrentItem(playindex , true);
+            mTrackPagerView.setCurrentItem(playindex, true);
         }
 
         //修改播放列表里的播放位置
@@ -475,7 +469,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
     @Override
     public void onPageSelected(int position) {
-        LogUtil.d(TAG , "position -------> " + position);
+        LogUtil.d(TAG, "position -------> " + position);
         //当页面被选择，就去切换播放内容
         if (mPlayerPresenter != null && mIsUserSlidePager) {
             mPlayerPresenter.playByIndex(position);

@@ -34,9 +34,9 @@ public class SobPopWindow extends PopupWindow {
     private ImageView mOrderIcon;
     private TextView mOrderText;
 
-    public SobPopWindow(){
+    public SobPopWindow() {
         //设置它的宽高
-        super(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        super(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         //这里要注意，设置这个属性前要设置setBackGroundDrable
         //否则点击外部无法关闭pop.
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -51,6 +51,7 @@ public class SobPopWindow extends PopupWindow {
         initView();
         initEvent();
     }
+
     private void initEvent() {
         mCloseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,29 +104,31 @@ public class SobPopWindow extends PopupWindow {
 
     /**
      * 给适配器设置数据
+     *
      * @param data
      */
-    public void setListData(List<Track> data){
+    public void setListData(List<Track> data) {
         if (mPlayListAdapter != null) {
             mPlayListAdapter.setData(data);
         }
     }
 
-    public void setCurrentPlayPosition(int position){
+    public void setCurrentPlayPosition(int position) {
         if (mPlayListAdapter != null) {
             //设置播放列表当前播放的位置
-         mPlayListAdapter.setCurrentPlayPosition(position);
-        mTracksList.scrollToPosition(position);
+            mPlayListAdapter.setCurrentPlayPosition(position);
+            mTracksList.scrollToPosition(position);
         }
     }
 
 
-    public void setPlayListItemClickListener(PlayListItemClickListener listener){
+    public void setPlayListItemClickListener(PlayListItemClickListener listener) {
         mPlayListAdapter.setOnItemClickListener(listener);
     }
 
     /**
      * 更新播放列表播放模式
+     *
      * @param currentMode
      */
     public void updatePlayMode(XmPlayListControl.PlayMode currentMode) {
@@ -134,11 +137,12 @@ public class SobPopWindow extends PopupWindow {
 
     /**
      * 更新切换列表顺序和逆序按钮和文字
+     *
      * @param isReverse
      */
-    public void updateOrderIcon(boolean isReverse){
+    public void updateOrderIcon(boolean isReverse) {
         mOrderIcon.setImageResource(isReverse ? R.drawable.selector_paly_mode_list_order : R.drawable.selector_paly_mode_list_revers);
-        mOrderText.setText(BaseApplication.getAppContext().getResources().getString(isReverse ? R.string.order_text:R.string.revers_text));
+        mOrderText.setText(BaseApplication.getAppContext().getResources().getString(isReverse ? R.string.order_text : R.string.revers_text));
     }
 
     /**
@@ -151,7 +155,7 @@ public class SobPopWindow extends PopupWindow {
     private void updatePlayModeBtnImg(XmPlayListControl.PlayMode playMode) {
         int resId = R.drawable.selector_paly_mode_list_revers;
         int textId = R.string.play_mode_order_text;
-        switch (playMode){
+        switch (playMode) {
             case PLAY_MODEL_LIST:
                 resId = R.drawable.selector_paly_mode_list_revers;
                 textId = R.string.play_mode_order_text;
@@ -174,7 +178,7 @@ public class SobPopWindow extends PopupWindow {
     }
 
 
-    public interface PlayListItemClickListener{
+    public interface PlayListItemClickListener {
         void onItemClick(int position);
     }
 

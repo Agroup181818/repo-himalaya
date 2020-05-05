@@ -17,11 +17,11 @@ public class LoadingView extends ImageView {
     private boolean mNeedRotate = false;
 
     public LoadingView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public LoadingView(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public LoadingView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -39,11 +39,11 @@ public class LoadingView extends ImageView {
             @Override
             public void run() {
                 rotateDegree += 30;
-                rotateDegree = rotateDegree <= 360 ? rotateDegree:0;
+                rotateDegree = rotateDegree <= 360 ? rotateDegree : 0;
                 invalidate();
                 //是否继续旋转
-                if(mNeedRotate){
-                    postDelayed(this,100);
+                if (mNeedRotate) {
+                    postDelayed(this, 100);
                 }
 
             }
@@ -63,7 +63,7 @@ public class LoadingView extends ImageView {
         第二个参数是旋转的x坐标
         第二个参数是旋转的y坐标
          */
-        canvas.rotate(rotateDegree,getWidth()/2,getHeight()/2);
+        canvas.rotate(rotateDegree, getWidth() / 2, getHeight() / 2);
         super.onDraw(canvas);
     }
 }

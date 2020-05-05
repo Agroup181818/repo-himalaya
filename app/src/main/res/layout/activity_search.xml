@@ -13,35 +13,54 @@
 
 
         <ImageView
+            android:id="@+id/search_back"
             android:layout_width="40dp"
             android:layout_height="20dp"
             android:paddingLeft="10dp"
-            android:id="@+id/search_back"
             android:paddingRight="10dp"
             android:src="@drawable/selector_back_btn" />
 
 
-        <EditText
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:id="@+id/search_input"
-            android:paddingLeft="10dp"
-            android:hint="请输入专辑关键字"
-            android:textCursorDrawable="@drawable/shape_edit_text_cursor"
-            android:singleLine="true"
-            android:paddingRight="10dp"
-            android:textSize="16sp"
-            android:layout_weight="1"
-            android:background="@drawable/shape_edit_text_bg" />
+            android:layout_weight="1">
+
+
+            <EditText
+                android:id="@+id/search_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_edit_text_bg"
+                android:hint="请输入专辑关键字"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/shape_edit_text_cursor"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/search_input_delete"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="15dp"
+
+                android:src="@mipmap/input_delete_icon">
+
+            </ImageView>
+        </RelativeLayout>
+
 
         <TextView
+            android:id="@+id/search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
-            android:id="@+id/search_btn"
             android:text="搜索"
             android:textColor="@color/main_color"
             android:textSize="18sp" />
@@ -53,11 +72,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-<!--    <com.example.himalaya.views.FlowTextLayout-->
-<!--        android:id="@+id/flow_text_layout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_margin="10dp">-->
-
-<!--    </com.example.himalaya.views.FlowTextLayout>-->
 </LinearLayout>

@@ -30,7 +30,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
 
     public static final String TAG = "RecommendFragment";
     private View mRootView;
-    private RecyclerView  mRecommendRV;
+    private RecyclerView mRecommendRV;
     private AlbumListAdapter mRecommendListAdapter;
     private RecommendPresenter mRecommendPresenter;
     private UILoader mUiLoader;
@@ -59,7 +59,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         mRecommendPresenter.getRecommendList();
 
         if (mUiLoader.getParent() instanceof ViewGroup) {
-            ((ViewGroup)mUiLoader.getParent()).removeView(mUiLoader);
+            ((ViewGroup) mUiLoader.getParent()).removeView(mUiLoader);
         }
         //返回view给界面显示
         return mUiLoader;
@@ -68,7 +68,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
     @SuppressLint("WrongConstant")
     private View createSuccessView(LayoutInflater layoutInflater, ViewGroup container) {
         //View 加载完成
-        mRootView = layoutInflater.inflate(R.layout.fragment_recommend, container,false);
+        mRootView = layoutInflater.inflate(R.layout.fragment_recommend, container, false);
         //recycleView的使用
         //1.找到对应的控件
         mRecommendRV = mRootView.findViewById(R.id.recommend_list);
@@ -81,10 +81,10 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
                 //dip2px dp转像素
-                outRect.top= UIUtil.dip2px(view.getContext(),5);
-                outRect.bottom=UIUtil.dip2px(view.getContext(),5);
-                outRect.left=UIUtil.dip2px(view.getContext(),5);
-                outRect.right=UIUtil.dip2px(view.getContext(),5);
+                outRect.top = UIUtil.dip2px(view.getContext(), 5);
+                outRect.bottom = UIUtil.dip2px(view.getContext(), 5);
+                outRect.left = UIUtil.dip2px(view.getContext(), 5);
+                outRect.right = UIUtil.dip2px(view.getContext(), 5);
 
             }
         });
@@ -98,7 +98,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
 
     @Override
     public void onRecommendListLoaded(List<Album> result) {
-        LogUtil.d(TAG , "onRecommendListLoaded");
+        LogUtil.d(TAG, "onRecommendListLoaded");
         //当获取到推荐内容的时候，这个方法会被调用(成功了)
         // 数据回来以后，就是更新UI了
         //把数据设置给适配器 并且更新
@@ -108,19 +108,19 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
 
     @Override
     public void onNetworkError() {
-        LogUtil.d(TAG , "onNetworkError");
+        LogUtil.d(TAG, "onNetworkError");
         mUiLoader.updateStatus(UILoader.UIStatus.NETWORK_ERROE);
     }
 
     @Override
     public void onEmpty() {
-        LogUtil.d(TAG , "onEmpty");
+        LogUtil.d(TAG, "onEmpty");
         mUiLoader.updateStatus(UILoader.UIStatus.EMPTY);
     }
 
     @Override
     public void onLoading() {
-        LogUtil.d(TAG , "onLoading");
+        LogUtil.d(TAG, "onLoading");
         mUiLoader.updateStatus(UILoader.UIStatus.LOADING);
     }
 

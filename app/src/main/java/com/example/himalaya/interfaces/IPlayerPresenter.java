@@ -32,6 +32,7 @@ public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
 
     /**
      * 切换播放类型
+     *
      * @param mode
      */
     void switchPlayMode(XmPlayListControl.PlayMode mode);
@@ -43,25 +44,27 @@ public interface IPlayerPresenter extends IBasePresenter<IPlayerCallback> {
 
     /**
      * 根据节目在列表中的位置播放
+     *
      * @param index
      */
     void playByIndex(int index);
 
     /**
      * 切换播放进度
+     *
      * @param progress
      */
     void seekTo(int progress);
 
     /**
      * 判断播放器是否正在播放
+     *
      * @return
      */
     boolean isPlaying();
 
     //把播放器列表反转
     void reversePlayList();
-
 
 
 }

@@ -9,6 +9,7 @@ public interface IAlbumDetailViewCallback {
 
     /**
      * 专辑详情内容加载出来了
+     *
      * @param tracks
      */
     void onDetailListLoad(List<Track> tracks);
@@ -20,6 +21,7 @@ public interface IAlbumDetailViewCallback {
 
     /**
      * 把Album传给UI
+     *
      * @param album
      */
     void onAlbumLoaded(Album album);
@@ -27,14 +29,16 @@ public interface IAlbumDetailViewCallback {
 
     /**
      * 加载更多的结果
-     * @param size  size>0 表示加载成功
+     *
+     * @param size size>0 表示加载成功
      */
     void onLoaderMoreFinished(int size);
 
 
     /**
      * 下拉加载更多的结果
-     * @param size  size>0 表示加载成功
+     *
+     * @param size size>0 表示加载成功
      */
     void onRefreshFinished(int size);
 

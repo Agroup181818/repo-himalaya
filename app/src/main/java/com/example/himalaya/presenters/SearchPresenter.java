@@ -17,24 +17,24 @@ import java.util.List;
 
 public class SearchPresenter implements ISearchPresenter {
 
-    private static  final String TAG = "SearchPresenter";
+    private static final String TAG = "SearchPresenter";
     //当前的搜索关键字
     private String mCurrentKeyWord = null;
     private XimalayApi mXimalayapi;
     private static final int DEFAULT_PAGE = 1;
-    private int mCurrenPage = DEFAULT_PAGE;
+    private int mCurrentPage = DEFAULT_PAGE;
 
 
-    private SearchPresenter(){
+    private SearchPresenter() {
         mXimalayapi = XimalayApi.getXimalayapi();
     }
 
     private static SearchPresenter sSearchPresenter = null;
 
-    public static SearchPresenter getSearchPresenter(){
+    public static SearchPresenter getSearchPresenter() {
         if (sSearchPresenter == null) {
-            synchronized (SearchPresenter.class){
-                if(sSearchPresenter ==  null){
+            synchronized (SearchPresenter.class) {
+                if (sSearchPresenter == null) {
                     sSearchPresenter = new SearchPresenter();
                 }
             }
@@ -53,27 +53,27 @@ public class SearchPresenter implements ISearchPresenter {
     }
 
     private void search(String keyword) {
-        mXimalayapi.searchByKeyWord(keyword, mCurrenPage, new IDataCallBack<SearchAlbumList>() {
+        mXimalayapi.searchByKeyWord(keyword, mCurrentPage, new IDataCallBack<SearchAlbumList>() {
             @Override
             public void onSuccess(SearchAlbumList searchAlbumList) {
                 List<Album> albums = searchAlbumList.getAlbums();
                 if (albums != null) {
-                    LogUtil.d(TAG,"album size -- > " +albums.size());
+                    LogUtil.d(TAG, "album size -- > " + albums.size());
                     for (ISearchCallback iSearchCallback : mCallback) {
                         iSearchCallback.onSearchResultLoaded(albums);
                     }
-                }else {
-                    LogUtil.d(TAG,"album si null..");
+                } else {
+                    LogUtil.d(TAG, "album si null..");
                 }
 
             }
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                LogUtil.d(TAG,"errorCode -- > " +errorCode);
-                LogUtil.d(TAG,"errorMsg -- > " +errorMsg);
-                for(ISearchCallback iSearchCallback: mCallback){
-                    iSearchCallback. onError(errorCode, errorMsg);
+                LogUtil.d(TAG, "errorCode -- > " + errorCode);
+                LogUtil.d(TAG, "errorMsg -- > " + errorMsg);
+                for (ISearchCallback iSearchCallback : mCallback) {
+                    iSearchCallback.onError(errorCode, errorMsg);
                 }
             }
         });
@@ -97,17 +97,17 @@ public class SearchPresenter implements ISearchPresenter {
             public void onSuccess(HotWordList hotWordList) {
                 if (hotWordList != null) {
                     List<HotWord> hotWords = hotWordList.getHotWordList();
-                    LogUtil.d(TAG,"hotWords size -- > "+ hotWords.size());
-                    for(ISearchCallback iSearchCallback: mCallback){
-                        iSearchCallback. onHotWordLoaded(hotWords);
+                    LogUtil.d(TAG, "hotWords size -- > " + hotWords.size());
+                    for (ISearchCallback iSearchCallback : mCallback) {
+                        iSearchCallback.onHotWordLoaded(hotWords);
                     }
                 }
             }
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                LogUtil.d(TAG,"getHotWord errorCode -- > " +errorCode);
-                LogUtil.d(TAG,"getHotWord errorMsg -- > " +errorMsg);
+                LogUtil.d(TAG, "getHotWord errorCode -- > " + errorCode);
+                LogUtil.d(TAG, "getHotWord errorMsg -- > " + errorMsg);
 
             }
         });
@@ -120,16 +120,16 @@ public class SearchPresenter implements ISearchPresenter {
             public void onSuccess(SuggestWords suggestWords) {
                 if (suggestWords != null) {
                     List<QueryResult> keyWordList = suggestWords.getKeyWordList();
-                    LogUtil.d(TAG,"keyWordList size -- > "+keyWordList.size());
+                    LogUtil.d(TAG, "keyWordList size -- > " + keyWordList.size());
                 }
             }
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                LogUtil.d(TAG,"getHotWord errorCode -- > " +errorCode);
-                LogUtil.d(TAG,"getHotWord errorMsg -- > " +errorMsg);
-                for(ISearchCallback iSearchCallback: mCallback){
-                    iSearchCallback. onError(errorCode, errorMsg);
+                LogUtil.d(TAG, "getHotWord errorCode -- > " + errorCode);
+                LogUtil.d(TAG, "getHotWord errorMsg -- > " + errorMsg);
+                for (ISearchCallback iSearchCallback : mCallback) {
+                    iSearchCallback.onError(errorCode, errorMsg);
                 }
             }
         });

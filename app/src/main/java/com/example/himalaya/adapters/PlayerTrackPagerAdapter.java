@@ -37,7 +37,7 @@ public class PlayerTrackPagerAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
         View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.item_track_pager, container, false);
-        LogUtil.d(TAG,"container.getContext()== "+container.getContext());
+        LogUtil.d(TAG, "container.getContext()== " + container.getContext());
 
         container.addView(itemView);
         //设置数据
