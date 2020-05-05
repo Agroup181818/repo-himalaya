@@ -18,6 +18,7 @@ import com.example.himalaya.adapters.IndicatorAdapter;
 import com.example.himalaya.adapters.MainContentAdapter;
 
 import com.example.himalaya.base.BaseApplication;
+import com.example.himalaya.data.XimalayaDBHelper;
 import com.example.himalaya.interfaces.IPlayerCallback;
 import com.example.himalaya.presenters.PlayerPresenter;
 import com.example.himalaya.utils.LogUtil;
@@ -60,6 +61,7 @@ public class MainActivity extends FragmentActivity implements IPlayerCallback {
         initEvent();
         //
         initPresenter();
+
     }
 
     private void initPresenter() {

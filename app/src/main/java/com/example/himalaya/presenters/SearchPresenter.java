@@ -1,6 +1,6 @@
 package com.example.himalaya.presenters;
 
-import com.example.himalaya.api.XimalayApi;
+import com.example.himalaya.data.XimalayApi;
 import com.example.himalaya.interfaces.ISearchCallback;
 import com.example.himalaya.interfaces.ISearchPresenter;
 import com.example.himalaya.utils.LogUtil;
