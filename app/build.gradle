@@ -32,6 +32,14 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    android {
+        //指定jdk版本
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+    }
+
 }
 
 dependencies {
@@ -53,5 +61,6 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    implementation "io.reactivex.rxjava3:rxjava:3.0.3"
 
 }

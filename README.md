@@ -23,6 +23,20 @@ P118BUG解决了
 没有做的×p99,100,101,102,103,105
 
 =======
+
+Static interface methods are only supported starting with Android N (--min-api 24): io.reactivex.rxjava3.disposables.Disposable io.reactivex.rxjava3.disposables.Disposable.disposed()
+错误---->在app build:gradle 中的android 下添加 指定jdk版本的代码,如下:
+```
+android {
+    //指定jdk版本
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+```
+
 配置build.gradle 中阿里镜像
 
 ```java
@@ -41,6 +55,8 @@ implementation 'com.google.code.gson:gson:2.8.1'
 implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 implementation 'com.squareup.okio:okio:1.15.0'
 implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+implementation "io.reactivex.rxjava3:rxjava:3.0.3"
 ```
 
 
@@ -2034,3 +2050,5 @@ if (TextUtils.isEmpty(keyword)) {
                     return;
                 }
 ```
+P111订阅的presenter逻辑
+
