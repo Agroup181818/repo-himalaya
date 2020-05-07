@@ -4,11 +4,17 @@
     android:layout_height="match_parent">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="订阅界面"
-        android:textSize="30sp"/>
+<!--    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/sub_list"
+            android:background="#fff4f4f4"
+            android:layout_height="match_parent" />
+
+
+<!--    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>-->
 
 </RelativeLayout>

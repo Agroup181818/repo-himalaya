@@ -17,7 +17,7 @@ public class XimalayaDBHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(SQLiteDatabase db) {
         LogUtil.d(TAG,"onCreate....");
         //创建数据表
         //订阅相关字段
@@ -32,13 +32,8 @@ public class XimalayaDBHelper extends SQLiteOpenHelper {
                 Constants.SUB_AUTHOR_NAME + " varchar," +
                 Constants.SUB_ALBUM_ID + " integer" +
                 ");";
-        sqLiteDatabase.execSQL(subTbSql);
-        //测试添加数据
-        String testSql = "insert into subTb(title , description) values('title','description');\n";
+        db.execSQL(subTbSql);
 
-        for (int i = 0; i < 10000; i++) {
-            sqLiteDatabase.execSQL(testSql);
-        }
     }
 
     @Override

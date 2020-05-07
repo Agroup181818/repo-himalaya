@@ -1,6 +1,5 @@
 package com.example.himalaya.presenters;
 
-import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.base.BaseApplication;
 import com.example.himalaya.data.ISubDaoCallback;
 import com.example.himalaya.data.SubscriptionDao;
@@ -31,7 +30,6 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     private SubscriptionPresenter() {
         mSubscriptionDao = SubscriptionDao.getInstance();
         mSubscriptionDao.setCallback(this);
-        listSubscriptions();
     }
 
     private void listSubscriptions() {
@@ -86,18 +84,30 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     @Override
     public void getSubscriptionList() {
         listSubscriptions();
-
     }
 
     @Override
     public boolean isSub(Album album) {
         Album result = mData.get(album.getId());
-        return result==null;
+        //不为空，表示已经订阅
+        return result!=null;
+    }
+    @Override
+    public void registerViewCallback(ISubscriptionCallback iSubscriptionCallback) {
+        if (!mCallbacks.contains(iSubscriptionCallback)) {
+            mCallbacks.add(iSubscriptionCallback);
+        }
+    }
+
+    @Override
+    public void unRegisterViewCallback(ISubscriptionCallback iSubscriptionCallback) {
+        mCallbacks.remove(iSubscriptionCallback);
     }
 
 
     @Override
     public void onAddResult(final Boolean isSuccess) {
+        listSubscriptions();
         //添加结果的回调
         BaseApplication.getsHandler().post(new Runnable() {
             @Override
@@ -111,6 +121,8 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
 
     @Override
     public void onDelResult(final Boolean isSuccess) {
+        listSubscriptions();
+
         //删除结果的回调
         BaseApplication.getsHandler().post(new Runnable() {
             @Override
@@ -125,6 +137,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     @Override
     public void onSubListLoaded(final List<Album> result) {
         //加载数据的回调
+        mData.clear();
         for (Album album : result) {
             mData.put(album.getId(), album);
         }
@@ -139,15 +152,4 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
         });
     }
 
-    @Override
-    public void registerViewCallback(ISubscriptionCallback iSubscriptionCallback) {
-        if (!mCallbacks.contains(iSubscriptionCallback)) {
-            mCallbacks.add(iSubscriptionCallback);
-        }
-    }
-
-    @Override
-    public void unRegisterViewCallback(ISubscriptionCallback iSubscriptionCallback) {
-        mCallbacks.remove(iSubscriptionCallback);
-    }
 }

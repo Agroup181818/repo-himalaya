@@ -37,6 +37,7 @@ public class SubscriptionDao implements ISubDao {
     @Override
     public void addAlbum(Album album) {
         SQLiteDatabase db = null;
+        boolean isAddSuccess=false;
         try {
             db = mXimalayaDBHelper.getWritableDatabase();
             db.beginTransaction();
@@ -53,18 +54,18 @@ public class SubscriptionDao implements ISubDao {
             //插入数据
             db.insert(Constants.SUB_TB_NAME, null, contentValues);
             db.setTransactionSuccessful();
-            if (mCallback != null) {
-                mCallback.onAddResult(true);
-            }
+            isAddSuccess=true;
         } catch (Exception e) {
             e.printStackTrace();
-            if (mCallback != null) {
-                mCallback.onAddResult(false);
-            }
+            isAddSuccess=false;
+
         } finally {
             if (db != null) {
                 db.endTransaction();
                 db.close();
+            }
+            if (mCallback != null) {
+                mCallback.onAddResult(isAddSuccess);
             }
         }
     }
@@ -72,24 +73,25 @@ public class SubscriptionDao implements ISubDao {
     @Override
     public void deleteAlbum(Album album) {
         SQLiteDatabase db = null;
+        boolean isDeleteSuccess=false;
         try {
             db = mXimalayaDBHelper.getWritableDatabase();
             db.beginTransaction();
             int delete = db.delete(Constants.SUB_TB_NAME, Constants.SUB_ALBUM_ID + "=?", new String[]{album.getId() + ""});
             LogUtil.d(TAG, "deleteAlubum ------>" + delete);
             db.setTransactionSuccessful();
-            if (mCallback != null) {
-                mCallback.onDelResult(true);
-            }
+            isDeleteSuccess=true;
         } catch (Exception e) {
             e.printStackTrace();
-            if (mCallback != null) {
-                mCallback.onDelResult(false);
-            }
+            isDeleteSuccess=false;
+
         } finally {
             if (db != null) {
                 db.endTransaction();
                 db.close();
+            }
+            if (mCallback != null) {
+                mCallback.onDelResult(isDeleteSuccess);
             }
         }
     }
@@ -100,7 +102,8 @@ public class SubscriptionDao implements ISubDao {
         List<Album> result = new ArrayList<>();
         try {
             db = mXimalayaDBHelper.getReadableDatabase();
-            Cursor query = db.query(Constants.SUB_TB_NAME,null,null,null,null,null,null);
+            db.beginTransaction();
+            Cursor query = db.query(Constants.SUB_TB_NAME,null,null,null,null,null,"_id desc");
             //封装数据
             while (query.moveToNext()) {
                 Album album = new Album();
