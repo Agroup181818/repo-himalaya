@@ -18,7 +18,7 @@ public class XimalayaDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        LogUtil.d(TAG,"onCreate....");
+        LogUtil.d(TAG, "onCreate....");
         //创建数据表
         //订阅相关字段
         //图片、title、描述、播放量、节目数量、作者名字（详情页面） 专辑id

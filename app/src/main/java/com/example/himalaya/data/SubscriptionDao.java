@@ -37,7 +37,7 @@ public class SubscriptionDao implements ISubDao {
     @Override
     public void addAlbum(Album album) {
         SQLiteDatabase db = null;
-        boolean isAddSuccess=false;
+        boolean isAddSuccess = false;
         try {
             db = mXimalayaDBHelper.getWritableDatabase();
             db.beginTransaction();
@@ -54,10 +54,10 @@ public class SubscriptionDao implements ISubDao {
             //插入数据
             db.insert(Constants.SUB_TB_NAME, null, contentValues);
             db.setTransactionSuccessful();
-            isAddSuccess=true;
+            isAddSuccess = true;
         } catch (Exception e) {
             e.printStackTrace();
-            isAddSuccess=false;
+            isAddSuccess = false;
 
         } finally {
             if (db != null) {
@@ -73,17 +73,17 @@ public class SubscriptionDao implements ISubDao {
     @Override
     public void deleteAlbum(Album album) {
         SQLiteDatabase db = null;
-        boolean isDeleteSuccess=false;
+        boolean isDeleteSuccess = false;
         try {
             db = mXimalayaDBHelper.getWritableDatabase();
             db.beginTransaction();
             int delete = db.delete(Constants.SUB_TB_NAME, Constants.SUB_ALBUM_ID + "=?", new String[]{album.getId() + ""});
             LogUtil.d(TAG, "deleteAlubum ------>" + delete);
             db.setTransactionSuccessful();
-            isDeleteSuccess=true;
+            isDeleteSuccess = true;
         } catch (Exception e) {
             e.printStackTrace();
-            isDeleteSuccess=false;
+            isDeleteSuccess = false;
 
         } finally {
             if (db != null) {
@@ -103,7 +103,7 @@ public class SubscriptionDao implements ISubDao {
         try {
             db = mXimalayaDBHelper.getReadableDatabase();
             db.beginTransaction();
-            Cursor query = db.query(Constants.SUB_TB_NAME,null,null,null,null,null,"_id desc");
+            Cursor query = db.query(Constants.SUB_TB_NAME, null, null, null, null, null, "_id desc");
             //封装数据
             while (query.moveToNext()) {
                 Album album = new Album();

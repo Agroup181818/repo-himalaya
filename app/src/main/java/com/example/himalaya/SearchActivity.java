@@ -87,7 +87,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
 
     private void initEvent() {
 
-        mAlbumListAdapter.setOnRecommendItemClickLister(this);
+        mAlbumListAdapter.setAlbumItemClickLister(this);
 
 
         mDelBtn.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +125,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
 
                 if (TextUtils.isEmpty(keyword)) {
                     //提示
-                    Toast.makeText(SearchActivity.this,"搜索关键词不能为空",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SearchActivity.this, "搜索关键词不能为空", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -164,7 +164,7 @@ public class SearchActivity extends BaseActivity implements ISearchCallback, Alb
     private void switch2Search(String text) {
         if (TextUtils.isEmpty(text)) {
             //提示
-            Toast.makeText(this,"搜索关键词不能为空",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "搜索关键词不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         //1.把热词放到输入框里

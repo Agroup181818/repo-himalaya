@@ -10,12 +10,14 @@ public interface ISubscriptionPresenter extends IBasePresenter<ISubscriptionCall
 
     /**
      * 添加订阅
+     *
      * @param album
      */
     void addSubscription(Album album);
 
     /**
      * 删除订阅
+     *
      * @param album
      */
     void deleteSubscription(Album album);
@@ -28,6 +30,7 @@ public interface ISubscriptionPresenter extends IBasePresenter<ISubscriptionCall
 
     /**
      * 判断当前专辑是否已经收藏订阅
+     *
      * @param album
      */
     boolean isSub(Album album);

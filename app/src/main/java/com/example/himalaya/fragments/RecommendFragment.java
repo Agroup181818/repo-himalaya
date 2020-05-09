@@ -91,7 +91,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //3.设置适配器
         mRecommendListAdapter = new AlbumListAdapter();
         mRecommendRV.setAdapter(mRecommendListAdapter);
-        mRecommendListAdapter.setOnRecommendItemClickLister(this);
+        mRecommendListAdapter.setAlbumItemClickLister(this);
         return mRootView;
     }
 

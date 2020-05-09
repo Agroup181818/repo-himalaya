@@ -27,6 +27,7 @@ import com.example.himalaya.interfaces.ISubscriptionCallback;
 import com.example.himalaya.presenters.AlbumDetailPresenter;
 import com.example.himalaya.presenters.PlayerPresenter;
 import com.example.himalaya.presenters.SubscriptionPresenter;
+import com.example.himalaya.utils.Constants;
 import com.example.himalaya.utils.ImageBlur;
 import com.example.himalaya.utils.LogUtil;
 import com.example.himalaya.views.RoundRectImageView;
@@ -483,5 +484,11 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     @Override
     public void onSubscriptionsLoaded(List<Album> albums) {
         //在这个界面不需要处理
+    }
+
+    @Override
+    public void onSubFull() {
+        //处理一个即可
+        Toast.makeText(this, "订阅数量不得超过" + Constants.MAX_SUB_COUNT, Toast.LENGTH_SHORT).show();
     }
 }

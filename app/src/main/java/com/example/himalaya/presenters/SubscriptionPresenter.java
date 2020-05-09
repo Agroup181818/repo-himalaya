@@ -6,6 +6,7 @@ import com.example.himalaya.data.SubscriptionDao;
 
 import com.example.himalaya.interfaces.ISubscriptionCallback;
 import com.example.himalaya.interfaces.ISubscriptionPresenter;
+import com.example.himalaya.utils.Constants;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import java.util.ArrayList;
@@ -59,6 +60,14 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
 
     @Override
     public void addSubscription(final Album album) {
+        //判断当前的订阅数量,不能超过100
+        if (mData.size() >= Constants.MAX_SUB_COUNT) {
+            //给出提示
+            for (ISubscriptionCallback callback : mCallbacks) {
+                callback.onSubFull();
+            }
+            return;
+        }
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
@@ -90,8 +99,9 @@ public class SubscriptionPresenter implements ISubscriptionPresenter, ISubDaoCal
     public boolean isSub(Album album) {
         Album result = mData.get(album.getId());
         //不为空，表示已经订阅
-        return result!=null;
+        return result != null;
     }
+
     @Override
     public void registerViewCallback(ISubscriptionCallback iSubscriptionCallback) {
         if (!mCallbacks.contains(iSubscriptionCallback)) {
